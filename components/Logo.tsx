@@ -11,11 +11,10 @@ const Logo = ({ className }: { className?: string }) => {
           className
         )}
       >
-        L
+        Loom
         <span className='text-royal-green group-hover:text-crimson hoverEffect'>
-          oo
+          ika
         </span>
-        mika
       </h2>
     </Link>
   )
