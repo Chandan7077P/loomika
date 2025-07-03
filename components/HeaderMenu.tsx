@@ -9,7 +9,7 @@ const HeaderMenu = () => {
   const [hovered, setHovered] = React.useState<string | null>(null)
 
   return (
-    <div className='hidden md:inline-flex w-1/3 items-center gap-7 text-sm capitalize font-semibold text-royal-green'>
+    <div className='hidden md:inline-flex items-center gap-7 text-base capitalize font-semibold text-royal-green whitespace-nowrap'>
       {headerData?.map((item) => (
         <Link
           key={item?.title}
