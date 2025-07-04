@@ -21,7 +21,7 @@ const HomePage = () => {
             Explore the Catch
           </h1>
           <p className="text-lg md:text-xl">
-            Experience the elegance of shrimp in motion.
+            Experience the elegance of wild caught shrimps in motion.
           </p>
         </div>
       </div>
