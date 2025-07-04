@@ -32,9 +32,9 @@ const Navbar = () => {
     <nav
       className={`fixed w-full z-50 transition-colors duration-300 ${
         isScrolled
-          ? "bg-blue-900/90 text-white shadow-md"
+          ? "bg-blue-950/90 backdrop-blur-md text-white shadow-md"
           : "bg-gradient-to-b from-black/30 via-black/10 to-transparent text-white"
-      }`}
+      } `}
     >
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-16">
