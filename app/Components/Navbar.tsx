@@ -38,7 +38,7 @@ const Navbar = () => {
           {/* Brand */}
           <Link
             href="/"
-            className="text-xl font-bold hover:text-cyan-400 text-white"
+            className="text-xl font-bold text-white hover:text-cyan-400"
           >
             Baby Marine International
           </Link>
@@ -46,26 +46,19 @@ const Navbar = () => {
           {/* Menu Items */}
           <div className="hidden md:flex items-center space-x-4 text-sm font-semibold">
             {menuItems.map((item) => {
-              const currentPath = pathname.toLowerCase();
-              const targetPath = item.href.toLowerCase();
-
               const isActive =
-                targetPath === "/"
-                  ? currentPath === "/"
-                  : currentPath.startsWith(targetPath);
-
-              const baseClasses =
-                "px-4 py-2 rounded-full text-white";
-
-              const highlightClasses =
-                "bg-white/10 backdrop-blur-md text-cyan-400";
+                item.href === "/"
+                  ? pathname === "/"
+                  : pathname.startsWith(item.href);
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`${baseClasses} ${
-                    isScrolled && isActive ? highlightClasses : ""
+                  className={`px-4 py-2 rounded-full transition-colors ${
+                    isScrolled && isActive
+                      ? "bg-white/10 backdrop-blur-md text-cyan-400"
+                      : "text-white hover:text-cyan-400"
                   }`}
                 >
                   {item.label}
