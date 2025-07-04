@@ -1,0 +1,5 @@
+git init
+>> git remote add origin https://github.com/Chandan7077P/babymarine.git
+>> git add .
+>> git commit -m "Initial commit - BabyMarine website"
+>> git push -u origin master
