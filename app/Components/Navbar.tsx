@@ -16,7 +16,7 @@ const Navbar = () => {
     setIsMobileMenuOpen((prev) => !prev)
   }
 
-  // Close menu on outside click
+  // Close menu on outside click or scroll
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -24,15 +24,22 @@ const Navbar = () => {
       }
     }
 
+    const handleScroll = () => {
+      setIsMobileMenuOpen(false)
+    }
+
     if (isMobileMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside)
+      window.addEventListener('scroll', handleScroll)
     }
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
+      window.removeEventListener('scroll', handleScroll)
     }
   }, [isMobileMenuOpen])
 
-  // Scroll effect
+  // Scroll effect for navbar background
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0)
@@ -122,7 +129,7 @@ const Navbar = () => {
       {/* Mobile Dropdown */}
       <div
         ref={menuRef}
-        className={`fixed top-16 left-0 w-full z-40 pointer-events-none`}
+        className='fixed top-16 left-0 w-full z-40 pointer-events-none'
       >
         <div
           className={`transform transition-all duration-300 ease-out origin-top ${
