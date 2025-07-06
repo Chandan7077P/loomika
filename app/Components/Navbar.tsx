@@ -101,7 +101,7 @@ const Navbar = () => {
                     href={item.href}
                     className={`px-4 py-2 rounded-full transition-colors duration-200 ${
                       (isScrolled || isMobileMenuOpen) && isActive
-                        ? 'bg-white/10 backdrop-blur-lg text-cyan-400'
+                        ? 'bg-white/10 backdrop-blur-lg text-white'
                         : 'text-white hover:text-cyan-400'
                     }`}
                   >
@@ -136,7 +136,7 @@ const Navbar = () => {
             isMobileMenuOpen
               ? 'scale-y-100 opacity-100 pointer-events-auto'
               : 'scale-y-0 opacity-0'
-          } bg-white/10 backdrop-blur-lg rounded-b-xl shadow-lg p-2 flex flex-col space-y-2`}
+          } bg-blue-950/50 backdrop-blur-lg rounded-b-xl shadow-lg p-2 flex flex-col space-y-2`}
         >
           {menuItems.map((item) => {
             const isActive =
@@ -151,7 +151,7 @@ const Navbar = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`block px-4 py-2 rounded transition-colors duration-200 ${
                   isActive
-                    ? 'bg-white/10 text-cyan-400'
+                    ? 'bg-white/10 text-white'
                     : 'text-white hover:text-cyan-400'
                 }`}
               >
