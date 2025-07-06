@@ -36,15 +36,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-
-      {/* New Test Div */}
-      <div className='py-20 bg-white text-center'>
-        <h2 className='text-3xl font-semibold text-gray-800'>Our Products</h2>
-        <p className='mt-4 text-gray-600 max-w-2xl mx-auto'>
-          Discover our wide range of premium seafood, sustainably sourced and
-          expertly processed to preserve freshness and flavor.
-        </p>
-      </div>
     </section>
   )
 }
