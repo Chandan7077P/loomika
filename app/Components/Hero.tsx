@@ -27,7 +27,7 @@ const Hero = () => {
             {/* Button with animated multicolor border */}
             <div className='relative inline-block p-[2px] rounded-full animated-border'>
               <Link
-                href='/products'
+                href='/Products'
                 className='relative inline-block w-fit md:w-auto text-white font-semibold px-8 py-3 rounded-full bg-blue-950 hover:bg-blue-950 hover:text-cyan-400 transition-colors'
               >
                 <span className='pop-zoom'>View Products</span>
