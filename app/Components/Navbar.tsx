@@ -51,10 +51,10 @@ const Navbar = () => {
 
   const menuItems = [
     { href: '/', label: 'Home' },
-    { href: '/products', label: 'Product' },
-    { href: '/facility', label: 'Our Facility' },
-    { href: '/about', label: 'About Us' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/Products', label: 'Product' },
+    { href: '/Facility', label: 'Our Facility' },
+    { href: '/About', label: 'About Us' },
+    { href: '/Contact', label: 'Contact' },
   ]
 
   return (
