@@ -1,1 +1,52 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+/* Animated gradient border on a wrapper */
+.animated-border {
+  background: linear-gradient(
+    270deg,
+    #3b82f6,
+    /* blue */ #06b6d4,
+    /* cyan */ #ffffff,
+    /* white */ #06b6d4,
+    #3b82f6
+  );
+  background-size: 400% 400%;
+  animation: gradientMove 8s ease infinite;
+  border-radius: 9999px;
+}
+
+/* Gradient animation */
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes popZoom {
+  0% {
+    transform: scale(1);
+  }
+  80% {
+    transform: scale(1);
+  }
+  85% {
+    transform: scale(1.3);
+  }
+  90% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pop-zoom {
+  display: inline-block;
+  animation: popZoom 8s linear infinite;
+}
