@@ -3,71 +3,125 @@
 import React from "react";
 import Image from "next/image";
 
-// ✅ 1. Define a proper TypeScript interface
 interface Certificate {
   id: number;
   title: string;
   image: string;
 }
 
-// ✅ 2. Declare the certificates array with proper type
 const certificates: Certificate[] = [
   {
     id: 1,
     title: "HACCP Certified",
-    image: "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
+    image:
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
   },
   {
     id: 2,
     title: "FDA Approved",
-    image: "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
+    image:
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
   },
   {
     id: 3,
     title: "ISO 22000",
-    image: "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
+    image:
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
   },
   {
     id: 4,
-    title: "HACCP Certified",
-    image: "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
+    title: "GMP Certified",
+    image:
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
   },
   {
     id: 5,
-    title: "FDA Approved",
-    image: "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
+    title: "EU Standards",
+    image:
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
   },
 ];
 
+// Create multiple copies for seamless loop
+const tickerCertificates = [...certificates, ...certificates, ...certificates];
+
 const Certificates: React.FC = () => {
   return (
-    <section className="py-20 container max-w-7xl mx-auto px-2 sm:px-4 md:px-25 overflow-hidden">
+    <section className="py-20 max-w-6xl mx-auto px-4">
       <h2 className="text-3xl font-bold text-blue-900 mb-12 text-center">
         Our Certificates
       </h2>
 
-      {/* ✅ 3. Auto-scrolling container */}
-      <div className="relative w-full overflow-hidden">
-        <div className="flex animate-scroll gap-6">
-          {certificates.map((cert: Certificate, idx: number) => (
-            <div
-              key={idx}
-              className="min-w-[200px] flex-shrink-0 bg-white rounded-xl shadow-lg p-4 flex flex-col items-center justify-center"
-            >
-              <Image
-                src={cert.image}
-                alt={cert.title}
-                width={120}
-                height={120}
-                className="object-contain"
-              />
-              <p className="mt-4 text-blue-900 font-semibold text-center">
-                {cert.title}
-              </p>
-            </div>
-          ))}
+      <div className="relative overflow-hidden">
+        {/* Gradient masks for smooth fade effect */}
+        <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-white to-transparent z-10"></div>
+        <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-white to-transparent z-10"></div>
+        
+        {/* Ticker container */}
+        <div className="ticker-container">
+          <div className="ticker-content">
+            {tickerCertificates.map((cert, idx) => (
+              <div
+                key={`${cert.id}-${idx}`}
+                className="ticker-item bg-white rounded-xl p-6 border border-gray-100"
+              >
+                <div className="w-40 h-40 flex items-center justify-center mb-4 bg-gray-50 rounded-lg">
+                  <Image
+                    src={cert.image}
+                    alt={cert.title}
+                    width={140}
+                    height={140}
+                    className="object-contain max-w-full max-h-full rounded-lg"
+                  />
+                </div>
+                <p className="text-base text-blue-900 text-center font-medium">
+                  {cert.title}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .ticker-container {
+          display: flex;
+          overflow: hidden;
+          width: 100%;
+        }
+        
+        .ticker-content {
+          display: flex;
+          animation: scroll 20s linear infinite;
+          gap: 0rem;
+        }
+        
+        .ticker-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          min-width: 240px;
+          flex-shrink: 0;
+          transition: transform 0.3s ease;
+        }
+        
+        .ticker-item:hover {
+          transform: translateY(-5px);
+        }
+        
+        .ticker-container:hover .ticker-content {
+          animation-play-state: paused;
+        }
+        
+        @keyframes scroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-33.333%);
+          }
+        }
+      `}</style>
     </section>
   );
 };
