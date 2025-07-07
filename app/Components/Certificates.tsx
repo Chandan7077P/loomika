@@ -14,31 +14,49 @@ const certificates: Certificate[] = [
     id: 1,
     title: "HACCP Certified",
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/haacp.avif",
   },
   {
     id: 2,
-    title: "FDA Approved",
+    title: "BRC Certified",
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/brc-food-certificated-logo-vector.png",
   },
   {
     id: 3,
     title: "ISO 22000",
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/iso-22000-2018-certification-service.jpeg",
   },
   {
     id: 4,
-    title: "GMP Certified",
+    title: "BRC Certified",
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/brc-food-certificated-logo-vector.png",
   },
   {
     id: 5,
-    title: "EU Standards",
+    title: "HACCP Certified",
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/haacp.avif",
+  },
+  {
+    id: 6,
+    title: "BRC Certified",
+    image:
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/brc-food-certificated-logo-vector.png",
+  },
+  {
+    id: 7,
+    title: "ISO 22000",
+    image:
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/iso-22000-2018-certification-service.jpeg",
+  },
+  {
+    id: 8,
+    title: "BRC Certified",
+    image:
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/brc-food-certificated-logo-vector.png",
   },
 ];
 
@@ -49,7 +67,7 @@ const Certificates: React.FC = () => {
   return (
     <section className="py-20 max-w-6xl mx-auto px-4">
       <h2 className="text-3xl font-bold text-blue-900 mb-12 text-center">
-        Our Certificates
+        Our Certifications
       </h2>
 
       <div className="relative overflow-hidden">
@@ -74,7 +92,7 @@ const Certificates: React.FC = () => {
                     className="object-contain max-w-full max-h-full rounded-lg"
                   />
                 </div>
-                <p className="text-base text-blue-900 text-center font-medium">
+                <p className="text-base text-blue-900 text-center font-semibold">
                   {cert.title}
                 </p>
               </div>
