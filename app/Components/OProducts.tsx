@@ -55,7 +55,10 @@ const OProducts = () => {
   }, [emblaApi])
 
   return (
-    <section className='py-20 container max-w-7xl mx-auto px-2 sm:px-4 md:px-25'>
+    <section
+      id='our-products'
+      className='py-20 container max-w-7xl mx-auto px-2 sm:px-4 md:px-25'
+    >
       <h2 className='text-3xl font-bold text-blue-900 mb-12 text-center'>
         Our Products
       </h2>

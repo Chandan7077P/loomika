@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 const Hero = () => {
@@ -24,6 +25,27 @@ const Hero = () => {
               Experience the elegance of wild caught shrimps in motion from
               Kochi, Kerala.
             </p>
+            <div className='flex flex-row gap-4 sm:gap-8 items-center justify-center'>
+              <Link
+                href='#our-products'
+                className='group relative inline-block w-fit md:w-auto text-white font-semibold text-lg md:text-xl transition-colors pb-2'
+              >
+                <span className='block transition-transform duration-300 ease-out group-hover:-translate-y-2'>
+                  View Products
+                </span>
+                <span className='absolute bottom-0 left-0 w-full h-0.5 bg-blue-900'></span>
+              </Link>
+
+              <Link
+                href='#contact-us'
+                className='group relative inline-block w-fit md:w-auto text-white font-semibold text-lg md:text-xl transition-colors pb-2'
+              >
+                <span className='block transition-transform duration-300 ease-out group-hover:-translate-y-2'>
+                  Contact Us
+                </span>
+                <span className='absolute bottom-0 left-0 w-full h-0.5 bg-blue-900'></span>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
