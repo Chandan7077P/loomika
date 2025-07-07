@@ -11,7 +11,7 @@ const Contactus: React.FC = () => {
           Contact Us
         </h2>
         <p className="md:w-1/2 text-2xl text-blue-900 font-bold text-center md:text-left mb-6">
-          Get in Touch with Us
+          Get in Touch
         </p>
 
         <div className="flex flex-col md:flex-row gap-12">
