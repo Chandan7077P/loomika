@@ -13,8 +13,7 @@ const certificates: Certificate[] = [
   {
     id: 1,
     title: "HACCP Certified",
-    image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/haacp.avif",
+    image: "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/haacp.avif",
   },
   {
     id: 2,
@@ -37,8 +36,7 @@ const certificates: Certificate[] = [
   {
     id: 5,
     title: "HACCP Certified",
-    image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/haacp.avif",
+    image: "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/haacp.avif",
   },
   {
     id: 6,
@@ -74,14 +72,14 @@ const Certificates: React.FC = () => {
         {/* Gradient masks for smooth fade effect */}
         <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-white to-transparent z-10"></div>
         <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-white to-transparent z-10"></div>
-        
+
         {/* Ticker container */}
         <div className="ticker-container">
           <div className="ticker-content">
             {tickerCertificates.map((cert, idx) => (
               <div
                 key={`${cert.id}-${idx}`}
-                className="ticker-item bg-white rounded-xl p-6 border border-gray-100"
+                className="ticker-item bg-white rounded-xl p-6"
               >
                 <div className="w-40 h-40 flex items-center justify-center mb-4 bg-gray-50 rounded-lg">
                   <Image
@@ -110,17 +108,27 @@ const Certificates: React.FC = () => {
         
         .ticker-content {
           display: flex;
-          animation: scroll 20s linear infinite;
-          gap: 0rem;
+          animation: scroll 30s linear infinite;
+          gap: 1rem;
         }
         
         .ticker-item {
           display: flex;
           flex-direction: column;
           align-items: center;
-          min-width: 240px;
+          min-width: 160px;
           flex-shrink: 0;
           transition: transform 0.3s ease;
+        }
+        
+        @media (min-width: 768px) {
+          .ticker-content {
+            gap: 0.5rem;
+          }
+          
+          .ticker-item {
+            min-width: 240px;
+          }
         }
         
         .ticker-item:hover {
@@ -129,6 +137,12 @@ const Certificates: React.FC = () => {
         
         .ticker-container:hover .ticker-content {
           animation-play-state: paused;
+        }
+        
+        @media (max-width: 767px) {
+          .ticker-container:hover .ticker-content {
+            animation-play-state: running;
+          }
         }
         
         @keyframes scroll {
