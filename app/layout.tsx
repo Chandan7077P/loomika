@@ -31,7 +31,14 @@ export default function RootLayout({
       >
         <Navbar />
         <main className="min-h-screen">{children}</main>
-        <footer>Footer</footer>
+        <footer className="w-full bg-gray-800 text-white text-center py-2 text-sm">
+          <p>
+            BMI Website designed by{" "}
+            <span className="font-semibold">Chandan Padhan</span> – Digital
+            Marketing Intern at{" "}
+            <span className="font-semibold">Highland Group</span>
+          </p>
+        </footer>
       </body>
     </html>
   );
