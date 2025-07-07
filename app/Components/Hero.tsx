@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import React from 'react'
 
 const Hero = () => {
@@ -22,17 +21,9 @@ const Hero = () => {
               Explore the Catch
             </h1>
             <p className='text-lg md:text-xl mb-8'>
-              Experience the elegance of wild caught shrimps in motion from Kochi, Kerala.
+              Experience the elegance of wild caught shrimps in motion from
+              Kochi, Kerala.
             </p>
-            {/* Button with animated multicolor border */}
-            <div className='relative inline-block p-[2px] rounded-full animated-border'>
-              <Link
-                href='#our-products'
-                className='relative inline-block w-fit md:w-auto text-white font-semibold px-8 py-3 rounded-full bg-blue-950 hover:bg-blue-950 hover:text-cyan-400 transition-colors'
-              >
-                <span className='pop-zoom'>View Products</span>
-              </Link>
-            </div>
           </div>
         </div>
       </div>

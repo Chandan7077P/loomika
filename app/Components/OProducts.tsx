@@ -1,74 +1,71 @@
-"use client";
+'use client'
 
-import React, { useCallback } from "react";
-import Image from "next/image";
-import useEmblaCarousel from "embla-carousel-react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import React, { useCallback } from 'react'
+import Image from 'next/image'
+import useEmblaCarousel from 'embla-carousel-react'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 
 const products = [
   {
-    title: "Shrimps",
-    description: "Fresh wild-caught shrimp.",
+    title: 'Shrimps',
+    description: 'Fresh wild-caught shrimp.',
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Vannamei%20HOSO%20Bl.jpg",
+      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Vannamei%20HOSO%20Bl.jpg',
   },
   {
-    title: "Vannamei",
-    description: "Premium vannamei shrimps.",
+    title: 'Vannamei',
+    description: 'Premium vannamei shrimps.',
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Vannamei%20Fresh.jpg",
+      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Vannamei%20Fresh.jpg',
   },
   {
-    title: "Fish",
-    description: "Premium quality fish.",
+    title: 'Fish',
+    description: 'Premium quality fish.',
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Seabass%20(Lates%20calcarifer).JPG",
+      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Seabass%20(Lates%20calcarifer).JPG',
   },
   {
-    title: "Squid",
-    description: "Tender calamari squid.",
+    title: 'Squid',
+    description: 'Tender calamari squid.',
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Squid%20Whole%20(Loligo%20Sp).jpg",
+      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Squid%20Whole%20(Loligo%20Sp).jpg',
   },
   {
-    title: "Farmed BT",
-    description: "Delicious farmed shrimps.",
+    title: 'Farmed BT',
+    description: 'Delicious farmed shrimps.',
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Farmed%20BT%202.JPG",
+      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Farmed%20BT%202.JPG',
   },
-];
+]
 
 const OProducts = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    align: "start",
+    align: 'start',
     slidesToScroll: 1,
-    containScroll: "trimSnaps",
-  });
+    containScroll: 'trimSnaps',
+  })
 
   const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
-  }, [emblaApi]);
+    if (emblaApi) emblaApi.scrollPrev()
+  }, [emblaApi])
 
   const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
+    if (emblaApi) emblaApi.scrollNext()
+  }, [emblaApi])
 
   return (
-    <section
-      id="our-products"
-      className="py-20 container max-w-7xl mx-auto px-2 sm:px-4 md:px-25"
-    >
-      <h2 className="text-3xl font-bold text-blue-900 mb-12 text-center">
+    <section className='py-20 container max-w-7xl mx-auto px-2 sm:px-4 md:px-25'>
+      <h2 className='text-3xl font-bold text-blue-900 mb-12 text-center'>
         Our Products
       </h2>
 
       {/* Wrapper */}
-      <div className="relative flex items-center justify-center group">
+      <div className='relative flex items-center justify-center group'>
         {/* Left Button */}
         <button
           onClick={scrollPrev}
-          className="
+          className='
             hidden md:flex items-center justify-center
             absolute -left-12
             z-10
@@ -76,18 +73,18 @@ const OProducts = () => {
             rounded-full
             bg-blue-950/50 text-white backdrop-blur-md
             transition duration-300 transform hover:scale-110
-          "
+          '
         >
-          <ChevronLeftIcon className="w-6 h-6" />
+          <ChevronLeftIcon className='w-6 h-6' />
         </button>
 
         {/* Embla Carousel */}
-        <div className="overflow-hidden mx-2 sm:mx-4 md:mx-6" ref={emblaRef}>
-          <div className="flex">
+        <div className='overflow-hidden mx-2 sm:mx-4 md:mx-6' ref={emblaRef}>
+          <div className='flex'>
             {products.map((product, index) => (
               <div
                 key={index}
-                className="
+                className='
                   group/card
                   flex-shrink-0
                   w-64 sm:w-72
@@ -96,49 +93,49 @@ const OProducts = () => {
                   mr-4 sm:mr-6
                   flex flex-col overflow-hidden relative
                   border-2 border-blue-400
-                "
+                '
               >
                 {/* Image with zoom and gradient */}
                 {product.image && (
-                  <div className="relative w-full h-full">
+                  <div className='relative w-full h-full'>
                     <Image
                       src={product.image}
                       alt={product.title}
                       fill
-                      className="
+                      className='
                         object-cover
                         transition-transform duration-500
                         group-hover/card:scale-110
-                      "
-                      sizes="(max-width: 640px) 100vw, 288px"
+                      '
+                      sizes='(max-width: 640px) 100vw, 288px'
                       priority={index === 0}
                     />
                     {/* Gradient Overlay */}
                     <div
-                      className="
+                      className='
                         absolute bottom-0 left-0 w-full h-30
                         bg-gradient-to-t from-black to-transparent
-                      "
+                      '
                     />
                   </div>
                 )}
 
                 {/* Content */}
                 <div
-                  className="
+                  className='
                     absolute bottom-0 left-0 w-full p-4
                     flex flex-col items-center
                     transition-transform duration-500
                     group-hover/card:-translate-y-4
-                  "
+                  '
                 >
-                  <h3 className="text-xl font-semibold">{product.title}</h3>
+                  <h3 className='text-xl font-semibold'>{product.title}</h3>
                   <p
-                    className="
+                    className='
                       text-sm text-center opacity-0
                       group-hover/card:opacity-100
                       transition-opacity duration-500
-                    "
+                    '
                   >
                     {product.description}
                   </p>
@@ -151,7 +148,7 @@ const OProducts = () => {
         {/* Right Button */}
         <button
           onClick={scrollNext}
-          className="
+          className='
             hidden md:flex items-center justify-center
             absolute -right-12
             z-10
@@ -159,13 +156,13 @@ const OProducts = () => {
             rounded-full
             bg-blue-950/50 text-white backdrop-blur-md
             transition duration-300 transform hover:scale-110
-          "
+          '
         >
-          <ChevronRightIcon className="w-6 h-6" />
+          <ChevronRightIcon className='w-6 h-6' />
         </button>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default OProducts;
+export default OProducts
