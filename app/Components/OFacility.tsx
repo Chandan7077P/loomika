@@ -9,21 +9,21 @@ const facilities = [
     description:
       "Our facility in Kochi is equipped with the latest processing technology, ensuring the highest standards of quality and food safety.",
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Vannamei%20HOSO%20Bl.jpg",
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
   },
   {
     title: "Strict Quality Control",
     description:
-      "Maintaining the highest standards in seafood processing, we adhere to strict quality control measures to ensure the safety and freshness of our products.",
+      "We follow strict quality control measures to ensure the safety and freshness of our products.",
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Seabass%20(Lates%20calcarifer).JPG",
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Strict%20quality%20control.webp",
   },
   {
     title: "Expert Team",
     description:
       "Our team of experienced professionals is dedicated to delivering top-notch products that meet the highest standards of quality and food safety.",
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Squid%20Whole%20(Loligo%20Sp).jpg",
+      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Expert%20Team%20crop.jpg",
   },
 ];
 
@@ -37,7 +37,7 @@ const OFacility = () => {
       <div className="max-w-screen-xl mx-auto px-2 sm:px-4 md:px-8 lg:px-12">
         {/* Top Card */}
 
-        {/* Mobile Small: only image + title with gradient */}
+        {/* Mobile View */}
         <div className="block sm:hidden relative w-full h-60 rounded-xl overflow-hidden shadow-lg mb-6">
           <Image
             src={facilities[0].image}
@@ -52,7 +52,7 @@ const OFacility = () => {
           </div>
         </div>
 
-        {/* Tablet (sm to lg): image + description side by side */}
+        {/* Tablet View */}
         <div className="hidden sm:flex lg:hidden flex-row items-stretch bg-white rounded-xl overflow-hidden shadow-lg mb-6">
           <div className="relative w-1/2 min-h-[140px]">
             <Image
@@ -67,11 +67,13 @@ const OFacility = () => {
             <h3 className="text-lg font-semibold text-blue-900">
               {facilities[0].title}
             </h3>
-            <p className="text-sm text-gray-700 mt-1">{facilities[0].description}</p>
+            <p className="text-sm text-gray-700 mt-0">
+              {facilities[0].description}
+            </p>
           </div>
         </div>
 
-        {/* Desktop (lg and above): original desktop card */}
+        {/* Desktop View */}
         <div className="hidden lg:block group/card relative w-full bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 mb-6">
           <div className="relative w-full h-120 rounded-xl overflow-hidden">
             <Image
@@ -81,10 +83,12 @@ const OFacility = () => {
               className="object-cover transition-transform duration-500 group-hover/card:scale-110 rounded-xl"
               priority
             />
-            <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-black to-transparent rounded-b-xl" />
+            <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-black to-transparent rounded-b-xl" />
             <div className="absolute bottom-0 left-0 w-full p-6 flex flex-col items-center text-center transition-transform duration-500 group-hover/card:-translate-y-4">
-              <h3 className="text-2xl font-semibold text-white">{facilities[0].title}</h3>
-              <p className="text-base text-white mt-2 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500">
+              <h3 className="text-xl font-semibold text-white mb-1 leading-tight">
+                {facilities[0].title}
+              </h3>
+              <p className="text-base text-white opacity-0 translate-y-2 group-hover/card:opacity-100 group-hover/card:translate-y-0 transition-all duration-500">
                 {facilities[0].description}
               </p>
             </div>
@@ -108,8 +112,10 @@ const OFacility = () => {
                 />
                 <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-black to-transparent rounded-b-xl" />
                 <div className="absolute bottom-0 left-0 w-full p-6 flex flex-col items-center text-center transition-transform duration-500 group-hover/card:-translate-y-4">
-                  <h3 className="text-xl font-semibold text-white">{facility.title}</h3>
-                  <p className="text-base text-white mt-2 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500">
+                  <h3 className="text-xl font-semibold text-white mb-1 leading-tight">
+                    {facility.title}
+                  </h3>
+                  <p className="text-base text-white opacity-0 translate-y-2 group-hover/card:opacity-100 group-hover/card:translate-y-0 transition-all duration-500">
                     {facility.description}
                   </p>
                 </div>
@@ -123,23 +129,25 @@ const OFacility = () => {
                     alt={facility.title}
                     fill
                     className="object-cover rounded-l-xl"
-                    priority={false}
                   />
                 </div>
                 <div className="w-1/2 px-5 py-4 flex flex-col justify-center rounded-r-xl">
-                  <h3 className="text-lg font-semibold text-blue-900">{facility.title}</h3>
-                  <p className="text-sm text-gray-700 mt-1">{facility.description}</p>
+                  <h3 className="text-lg font-semibold text-blue-900">
+                    {facility.title}
+                  </h3>
+                  <p className="text-sm text-gray-700 mt-0">
+                    {facility.description}
+                  </p>
                 </div>
               </div>
 
-              {/* Mobile Small: only image + title with gradient */}
+              {/* Mobile View */}
               <div className="block sm:hidden relative w-full h-60 rounded-xl overflow-hidden shadow-lg">
                 <Image
                   src={facility.image}
                   alt={facility.title}
                   fill
                   className="object-cover rounded-xl"
-                  priority={false}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent rounded-xl" />
                 <div className="absolute bottom-4 left-4 right-4 text-white text-xl font-semibold">
