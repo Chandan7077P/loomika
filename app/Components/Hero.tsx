@@ -22,7 +22,7 @@ const Hero = () => {
               Explore the Catch
             </h1>
             <p className='text-lg md:text-xl mb-8'>
-              Experience the elegance of wild caught shrimps in motion.
+              Experience the elegance of wild caught shrimps in motion from Kochi, Kerala.
             </p>
             {/* Button with animated multicolor border */}
             <div className='relative inline-block p-[2px] rounded-full animated-border'>
