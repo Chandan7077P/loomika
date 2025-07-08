@@ -16,7 +16,7 @@ const Hero = () => {
             transition={{ duration: 1 }}
           >
             <video
-              className='w-full h-full object-cover'
+              className='absolute top-0 left-0 min-w-full min-h-full w-auto h-auto object-cover object-center'
               autoPlay
               muted
               loop
@@ -50,33 +50,32 @@ const Hero = () => {
               </p>
             </motion.div>
 
-            <div className='flex flex-row gap-4 sm:gap-8 items-center justify-center'>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.4 }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.4 }}
+              className='flex flex-row gap-4 sm:gap-8 items-center justify-center'
+            >
+              <Link
+                href='#our-products'
+                className='group relative inline-block w-fit md:w-auto text-white font-semibold text-lg md:text-xl transition-colors pb-2'
               >
-                <Link
-                  href='#our-products'
-                  className='group relative inline-block w-fit md:w-auto text-white font-semibold text-lg md:text-xl transition-colors pb-2'
-                >
-                  <span className='block transition-transform duration-300 ease-out group-hover:-translate-y-2'>
-                    View Products
-                  </span>
-                  <span className='absolute bottom-0 left-0 w-full h-0.5 bg-blue-900'></span>
-                </Link>
+                <span className='block transition-transform duration-300 ease-out group-hover:-translate-y-2'>
+                  View Products
+                </span>
+                <span className='absolute bottom-0 left-0 w-full h-0.5 bg-blue-900'></span>
+              </Link>
 
-                <Link
-                  href='#contact-us'
-                  className='group relative inline-block w-fit md:w-auto text-white font-semibold text-lg md:text-xl transition-colors pb-2 ml-4'
-                >
-                  <span className='block transition-transform duration-300 ease-out group-hover:-translate-y-2'>
-                    Contact Us
-                  </span>
-                  <span className='absolute bottom-0 left-0 w-full h-0.5 bg-blue-900'></span>
-                </Link>
-              </motion.div>
-            </div>
+              <Link
+                href='#contact-us'
+                className='group relative inline-block w-fit md:w-auto text-white font-semibold text-lg md:text-xl transition-colors pb-2 ml-4'
+              >
+                <span className='block transition-transform duration-300 ease-out group-hover:-translate-y-2'>
+                  Contact Us
+                </span>
+                <span className='absolute bottom-0 left-0 w-full h-0.5 bg-blue-900'></span>
+              </Link>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -84,4 +83,4 @@ const Hero = () => {
   )
 }
 
-export default Hero 
+export default Hero

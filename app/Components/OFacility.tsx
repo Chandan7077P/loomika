@@ -2,7 +2,10 @@
 
 import React, { useRef } from "react";
 import Image from "next/image";
-import { motion, useInView, Variants } from "framer-motion";
+import { motion, useInView, Variants, HTMLMotionProps } from "framer-motion";
+
+type Merge<P, T> = Omit<P, keyof T> & T;
+type MotionDivProps = Merge<HTMLMotionProps<"div">, React.HTMLAttributes<HTMLDivElement>>;
 
 const facilities = [
   {
@@ -37,37 +40,48 @@ const sectionVariants: Variants = {
   },
 };
 
+const titleVariants: Variants = {
+  hidden: { opacity: 0, y: 80 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay: 0.2, ease: "easeOut" },
+  },
+};
+
 const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 60 },
-  visible: (index: number) => ({
+  hidden: { opacity: 0, y: 80 },
+  visible: (index = 0) => ({
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.6,
-      ease: "easeOut",
       delay: index * 0.2,
+      ease: "easeOut",
     },
   }),
 };
 
 const OFacility = () => {
-  const sectionRef = useRef(null);
-  const inView = useInView(sectionRef, { margin: "-20% 0px -20% 0px", once: true });
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { margin: "-100px" });
 
   return (
-    <motion.section
+    <motion.div
       ref={sectionRef}
       className="py-20 container max-w-full mx-auto px-2 bg-black/10 backdrop-blur-md sm:px-4 md:px-8"
-      initial="hidden"
-      animate={inView ? "visible" : "hidden"}
-      variants={sectionVariants}
+      initial={{ opacity: 0, y: 80 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      <motion.h2
+      <motion.div
         className="text-3xl font-bold text-blue-900 mb-12 text-center"
-        variants={sectionVariants}
+        initial={{ opacity: 0, y: 80 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
       >
         Why Choose Us
-      </motion.h2>
+      </motion.div>
 
       <div className="max-w-screen-xl mx-auto px-2 sm:px-4 md:px-8 lg:px-12">
         {/* Top Card */}
@@ -75,6 +89,8 @@ const OFacility = () => {
           className="group/card relative w-full rounded-xl overflow-hidden shadow-lg mb-6"
           variants={cardVariants}
           custom={0}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
         >
           {/* Mobile */}
           <div className="block sm:hidden relative w-full h-60">
@@ -141,6 +157,8 @@ const OFacility = () => {
               className="group/card bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300"
               variants={cardVariants}
               custom={index + 1}
+              initial="hidden"
+              animate={isInView ? "visible" : "hidden"}
             >
               {/* Desktop */}
               <div className="hidden lg:block relative w-full h-80">
@@ -198,7 +216,7 @@ const OFacility = () => {
           ))}
         </div>
       </div>
-    </motion.section>
+    </motion.div>
   );
 };
 
