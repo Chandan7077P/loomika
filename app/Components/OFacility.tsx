@@ -2,10 +2,7 @@
 
 import React, { useRef } from "react";
 import Image from "next/image";
-import { motion, useInView, Variants, HTMLMotionProps } from "framer-motion";
-
-type Merge<P, T> = Omit<P, keyof T> & T;
-type MotionDivProps = Merge<HTMLMotionProps<"div">, React.HTMLAttributes<HTMLDivElement>>;
+import { motion, useInView, Variants, TargetAndTransition } from "framer-motion";
 
 const facilities = [
   {
@@ -31,33 +28,18 @@ const facilities = [
   },
 ];
 
-const sectionVariants: Variants = {
-  hidden: { opacity: 0, y: 80 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: "easeOut" },
-  },
-};
-
-const titleVariants: Variants = {
-  hidden: { opacity: 0, y: 80 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, delay: 0.2, ease: "easeOut" },
-  },
-};
+// ✅ Correctly typed easing
+const easeOut: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
 const cardVariants: Variants = {
   hidden: { opacity: 0, y: 80 },
-  visible: (index = 0) => ({
+  visible: (index = 0): TargetAndTransition => ({
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.6,
       delay: index * 0.2,
-      ease: "easeOut",
+      ease: easeOut,
     },
   }),
 };
@@ -72,7 +54,7 @@ const OFacility = () => {
       className="py-20 container max-w-full mx-auto px-2 bg-black/10 backdrop-blur-md sm:px-4 md:px-8"
       initial={{ opacity: 0, y: 80 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      transition={{ duration: 0.8, ease: easeOut }}
     >
       <motion.div
         className="text-3xl font-bold text-blue-900 mb-12 text-center"
