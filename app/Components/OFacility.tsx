@@ -1,78 +1,74 @@
-"use client";
+'use client';
 
-import React, { useRef } from "react";
-import Image from "next/image";
-import { motion, useInView, Variants, TargetAndTransition } from "framer-motion";
+import React, { useRef } from 'react';
+import Image from 'next/image';
+import { motion, useInView, Variants } from 'framer-motion';
 
 const facilities = [
   {
-    title: "Advanced Processing Technology",
+    title: 'Advanced Processing Technology',
     description:
-      "Our facility in Kochi is equipped with the latest processing technology, ensuring the highest standards of quality and food safety.",
+      'Our facility in Kochi is equipped with the latest processing technology, ensuring the highest standards of quality and food safety.',
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg",
+      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Advanced%20Processing%20Technology.jpg',
   },
   {
-    title: "Strict Quality Control",
+    title: 'Strict Quality Control',
     description:
-      "We follow strict quality control measures to ensure the safety and freshness of our products.",
+      'We follow strict quality control measures to ensure the safety and freshness of our products.',
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Strict%20quality%20control.webp",
+      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Strict%20quality%20control.webp',
   },
   {
-    title: "Expert Team",
+    title: 'Expert Team',
     description:
-      "Our team of experienced professionals is dedicated to delivering top-notch products that meet the highest standards of quality and food safety.",
+      'Our team of experienced professionals is dedicated to delivering top-notch products that meet the highest standards of quality and food safety.',
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Expert%20Team%20crop.jpg",
+      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Expert%20Team%20crop.jpg',
   },
 ];
 
-// ✅ Correctly typed easing
-const easeOut: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
-
-const cardVariants: Variants = {
+// Animation variant
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 80 },
-  visible: (index = 0): TargetAndTransition => ({
+  visible: (i: number) => ({
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.6,
-      delay: index * 0.2,
-      ease: easeOut,
+      delay: i * 0.2,
+      ease: [0.25, 0.1, 0.25, 1],
     },
   }),
 };
 
 const OFacility = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { margin: "-100px" });
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: false, amount: 0.2 });
 
   return (
-    <motion.div
+    <div
       ref={sectionRef}
       className="py-20 container max-w-full mx-auto px-2 bg-black/10 backdrop-blur-md sm:px-4 md:px-8"
-      initial={{ opacity: 0, y: 80 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.8, ease: easeOut }}
     >
-      <motion.div
+      <motion.h2
         className="text-3xl font-bold text-blue-900 mb-12 text-center"
-        initial={{ opacity: 0, y: 80 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        variants={fadeInUp}
+        initial="hidden"
+        animate={isInView ? 'visible' : 'hidden'}
+        custom={0}
       >
         Why Choose Us
-      </motion.div>
+      </motion.h2>
 
       <div className="max-w-screen-xl mx-auto px-2 sm:px-4 md:px-8 lg:px-12">
         {/* Top Card */}
         <motion.div
           className="group/card relative w-full rounded-xl overflow-hidden shadow-lg mb-6"
-          variants={cardVariants}
-          custom={0}
+          variants={fadeInUp}
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          animate={isInView ? 'visible' : 'hidden'}
+          custom={1}
         >
           {/* Mobile */}
           <div className="block sm:hidden relative w-full h-60">
@@ -137,10 +133,10 @@ const OFacility = () => {
             <motion.div
               key={index}
               className="group/card bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300"
-              variants={cardVariants}
-              custom={index + 1}
+              variants={fadeInUp}
               initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
+              animate={isInView ? 'visible' : 'hidden'}
+              custom={index + 2}
             >
               {/* Desktop */}
               <div className="hidden lg:block relative w-full h-80">
@@ -198,7 +194,7 @@ const OFacility = () => {
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

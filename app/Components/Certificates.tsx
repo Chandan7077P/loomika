@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion, useInView, useAnimation } from "framer-motion";
+import { motion, useInView, useAnimation, Variants } from "framer-motion";
 
 interface Certificate {
   id: number;
@@ -61,33 +61,38 @@ const certificates: Certificate[] = [
 
 const tickerCertificates = [...certificates, ...certificates, ...certificates];
 
-const Certificates: React.FC = () => {
-  const titleRef = useRef(null);
-  const isInView = useInView(titleRef, { amount: 0.5 });
-  const controls = useAnimation();
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 80 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.15,
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  }),
+};
 
-  useEffect(() => {
-    if (isInView) {
-      controls.start("visible");
-    } else {
-      controls.start("hidden");
-    }
-  }, [isInView, controls]);
+const Certificates: React.FC = () => {
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { amount: 0.3 });
 
   return (
-    <section className="py-20 max-w-6xl mx-auto px-4">
-      <motion.h2
-        ref={titleRef}
-        initial="hidden"
-        animate={controls}
-        variants={{
-          hidden: { opacity: 0, y: 40 },
-          visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
-        }}
-        className="text-3xl font-bold text-blue-900 mb-12 text-center"
-      >
+    <motion.section
+      ref={sectionRef}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={{
+        hidden: { opacity: 0, y: 80 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+      }}
+      className="py-20 max-w-6xl mx-auto px-4"
+      id="certificates"
+    >
+      <h2 className="text-3xl font-bold text-blue-900 mb-12 text-center">
         Our Certifications
-      </motion.h2>
+      </h2>
 
       <div className="relative overflow-hidden">
         {/* Gradient masks */}
@@ -98,8 +103,12 @@ const Certificates: React.FC = () => {
         <div className="ticker-container">
           <div className="ticker-content">
             {tickerCertificates.map((cert, idx) => (
-              <div
+              <motion.div
                 key={`${cert.id}-${idx}`}
+                custom={idx}
+                variants={cardVariants}
+                initial="hidden"
+                animate={isInView ? "visible" : "hidden"}
                 className="ticker-item bg-white rounded-xl p-6"
               >
                 <div className="w-40 h-40 flex items-center justify-center mb-4 bg-gray-50 rounded-lg">
@@ -114,7 +123,7 @@ const Certificates: React.FC = () => {
                 <p className="text-base text-blue-900 text-center font-semibold">
                   {cert.title}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -175,7 +184,7 @@ const Certificates: React.FC = () => {
           }
         }
       `}</style>
-    </section>
+    </motion.section>
   );
 };
 

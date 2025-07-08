@@ -1,41 +1,41 @@
-"use client";
+'use client';
 
-import React, { useCallback, useRef } from "react";
-import Image from "next/image";
-import useEmblaCarousel from "embla-carousel-react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { motion, useInView, Variants } from "framer-motion";
+import React, { useCallback, useRef } from 'react';
+import Image from 'next/image';
+import useEmblaCarousel from 'embla-carousel-react';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
+import { motion, useInView, Variants } from 'framer-motion';
 
 const products = [
   {
-    title: "Shrimps",
-    description: "Fresh wild-caught shrimp.",
+    title: 'Shrimps',
+    description: 'Fresh wild-caught shrimp.',
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Vannamei%20HOSO%20Bl.jpg",
+      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Vannamei%20HOSO%20Bl.jpg',
   },
   {
-    title: "Vannamei",
-    description: "Premium vannamei shrimps.",
+    title: 'Vannamei',
+    description: 'Premium vannamei shrimps.',
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Vannamei%20Fresh.jpg",
+      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Vannamei%20Fresh.jpg',
   },
   {
-    title: "Fish",
-    description: "Premium quality fish.",
+    title: 'Fish',
+    description: 'Premium quality fish.',
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Seabass%20(Lates%20calcarifer).JPG",
+      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Seabass%20(Lates%20calcarifer).JPG',
   },
   {
-    title: "Squid",
-    description: "Tender calamari squid.",
+    title: 'Squid',
+    description: 'Tender calamari squid.',
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Squid%20Whole%20(Loligo%20Sp).jpg",
+      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Squid%20Whole%20(Loligo%20Sp).jpg',
   },
   {
-    title: "Farmed BT",
-    description: "Delicious farmed shrimps.",
+    title: 'Farmed BT',
+    description: 'Delicious farmed shrimps.',
     image:
-      "https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Farmed%20BT%202.JPG",
+      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Farmed%20BT%202.JPG',
   },
 ];
 
@@ -47,17 +47,26 @@ const cardVariants: Variants = {
     transition: {
       delay: i * 0.15,
       duration: 0.6,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   }),
+};
+
+const arrowVariants: Variants = {
+  hidden: { opacity: 0, x: 20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.6, ease: 'easeOut' },
+  },
 };
 
 const OProducts = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    align: "start",
+    align: 'start',
     slidesToScroll: 1,
-    containScroll: "trimSnaps",
+    containScroll: 'trimSnaps',
   });
 
   const scrollPrev = useCallback(() => {
@@ -69,33 +78,32 @@ const OProducts = () => {
   }, [emblaApi]);
 
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { margin: "-100px" });
+  const isInView = useInView(sectionRef, { once: false, amount: 0.2 });
 
   return (
-    <motion.section
+    <section
       ref={sectionRef}
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
       className="py-20 container max-w-7xl mx-auto px-2 sm:px-4 md:px-25"
       id="our-products"
     >
+      {/* Section Title */}
       <motion.h2
-        initial={{ opacity: 0, y: 80 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
         className="text-3xl font-bold text-blue-900 mb-12 text-center"
+        variants={cardVariants}
+        initial="hidden"
+        animate={isInView ? 'visible' : 'hidden'}
+        custom={0}
       >
         Our Products
       </motion.h2>
 
       <div className="relative flex items-center justify-center group">
-        {/* Left arrow */}
+        {/* Left Arrow */}
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
           className="absolute -left-12 z-10"
+          variants={arrowVariants}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
         >
           <button
             onClick={scrollPrev}
@@ -105,16 +113,16 @@ const OProducts = () => {
           </button>
         </motion.div>
 
-        {/* Embla Carousel */}
+        {/* Carousel */}
         <div className="overflow-hidden mx-2 sm:mx-4 md:mx-6" ref={emblaRef}>
           <div className="flex">
             {products.map((product, index) => (
               <motion.div
                 key={index}
-                custom={index}
+                custom={index + 1}
                 variants={cardVariants}
                 initial="hidden"
-                animate={isInView ? "visible" : "hidden"}
+                animate={isInView ? 'visible' : 'hidden'}
                 className="group/card flex-shrink-0 w-64 sm:w-72 h-80 bg-blue-950 text-white rounded-xl mr-4 sm:mr-6 flex flex-col overflow-hidden relative border-2 border-blue-400"
               >
                 <div className="relative w-full h-full">
@@ -140,12 +148,12 @@ const OProducts = () => {
           </div>
         </div>
 
-        {/* Right arrow */}
+        {/* Right Arrow */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
           className="absolute -right-12 z-10"
+          variants={arrowVariants}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
         >
           <button
             onClick={scrollNext}
@@ -155,7 +163,7 @@ const OProducts = () => {
           </button>
         </motion.div>
       </div>
-    </motion.section>
+    </section>
   );
 };
 
