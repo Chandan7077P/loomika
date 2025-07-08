@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
+import { motion, useInView, Variants } from "framer-motion";
 
 const facilities = [
   {
@@ -27,55 +28,92 @@ const facilities = [
   },
 ];
 
+const sectionVariants: Variants = {
+  hidden: { opacity: 0, y: 80 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: "easeOut" },
+  },
+};
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 60 },
+  visible: (index: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+      delay: index * 0.2,
+    },
+  }),
+};
+
 const OFacility = () => {
+  const sectionRef = useRef(null);
+  const inView = useInView(sectionRef, { margin: "-20% 0px -20% 0px", once: true });
+
   return (
-    <section className="py-20 container max-w-full mx-auto px-2 bg-black/10 backdrop-blur-md sm:px-4 md:px-8">
-      <h2 className="text-3xl font-bold text-blue-900 mb-12 text-center">
+    <motion.section
+      ref={sectionRef}
+      className="py-20 container max-w-full mx-auto px-2 bg-black/10 backdrop-blur-md sm:px-4 md:px-8"
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      variants={sectionVariants}
+    >
+      <motion.h2
+        className="text-3xl font-bold text-blue-900 mb-12 text-center"
+        variants={sectionVariants}
+      >
         Why Choose Us
-      </h2>
+      </motion.h2>
 
       <div className="max-w-screen-xl mx-auto px-2 sm:px-4 md:px-8 lg:px-12">
         {/* Top Card */}
-
-        {/* Mobile View */}
-        <div className="block sm:hidden relative w-full h-60 rounded-xl overflow-hidden shadow-lg mb-6">
-          <Image
-            src={facilities[0].image}
-            alt={facilities[0].title}
-            fill
-            className="object-cover rounded-xl"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent rounded-xl" />
-          <div className="absolute bottom-4 left-4 right-4 text-white text-xl font-semibold">
-            {facilities[0].title}
-          </div>
-        </div>
-
-        {/* Tablet View */}
-        <div className="hidden sm:flex lg:hidden flex-row items-stretch bg-white rounded-xl overflow-hidden shadow-lg mb-6">
-          <div className="relative w-1/2 min-h-[140px]">
+        <motion.div
+          className="group/card relative w-full rounded-xl overflow-hidden shadow-lg mb-6"
+          variants={cardVariants}
+          custom={0}
+        >
+          {/* Mobile */}
+          <div className="block sm:hidden relative w-full h-60">
             <Image
               src={facilities[0].image}
               alt={facilities[0].title}
               fill
-              className="object-cover rounded-l-xl"
+              className="object-cover rounded-xl"
               priority
             />
-          </div>
-          <div className="w-1/2 px-5 py-4 flex flex-col justify-center rounded-r-xl">
-            <h3 className="text-lg font-semibold text-blue-900">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent rounded-xl" />
+            <div className="absolute bottom-4 left-4 right-4 text-white text-xl font-semibold">
               {facilities[0].title}
-            </h3>
-            <p className="text-sm text-gray-700 mt-0">
-              {facilities[0].description}
-            </p>
+            </div>
           </div>
-        </div>
 
-        {/* Desktop View */}
-        <div className="hidden lg:block group/card relative w-full bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 mb-6">
-          <div className="relative w-full h-120 rounded-xl overflow-hidden">
+          {/* Tablet */}
+          <div className="hidden sm:flex lg:hidden flex-row items-stretch bg-white rounded-xl overflow-hidden">
+            <div className="relative w-1/2 min-h-[140px]">
+              <Image
+                src={facilities[0].image}
+                alt={facilities[0].title}
+                fill
+                className="object-cover rounded-l-xl"
+                priority
+              />
+            </div>
+            <div className="w-1/2 px-5 py-4 flex flex-col justify-center rounded-r-xl">
+              <h3 className="text-lg font-semibold text-blue-900">
+                {facilities[0].title}
+              </h3>
+              <p className="text-sm text-gray-700 mt-0">
+                {facilities[0].description}
+              </p>
+            </div>
+          </div>
+
+          {/* Desktop */}
+          <div className="hidden lg:block relative w-full h-120">
             <Image
               src={facilities[0].image}
               alt={facilities[0].title}
@@ -93,17 +131,19 @@ const OFacility = () => {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Bottom Two Cards */}
+        {/* Bottom Cards */}
         <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
           {facilities.slice(1).map((facility, index) => (
-            <div
+            <motion.div
               key={index}
-              className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300"
+              className="group/card bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300"
+              variants={cardVariants}
+              custom={index + 1}
             >
-              {/* Desktop View */}
-              <div className="hidden lg:block group/card relative w-full h-80 rounded-xl overflow-hidden">
+              {/* Desktop */}
+              <div className="hidden lg:block relative w-full h-80">
                 <Image
                   src={facility.image}
                   alt={facility.title}
@@ -121,8 +161,8 @@ const OFacility = () => {
                 </div>
               </div>
 
-              {/* Tablet View */}
-              <div className="hidden sm:flex lg:hidden flex-row items-stretch bg-white rounded-xl overflow-hidden shadow-lg">
+              {/* Tablet */}
+              <div className="hidden sm:flex lg:hidden flex-row items-stretch">
                 <div className="relative w-1/2 min-h-[140px]">
                   <Image
                     src={facility.image}
@@ -141,8 +181,8 @@ const OFacility = () => {
                 </div>
               </div>
 
-              {/* Mobile View */}
-              <div className="block sm:hidden relative w-full h-60 rounded-xl overflow-hidden shadow-lg">
+              {/* Mobile */}
+              <div className="block sm:hidden relative w-full h-60">
                 <Image
                   src={facility.image}
                   alt={facility.title}
@@ -154,11 +194,11 @@ const OFacility = () => {
                   {facility.title}
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

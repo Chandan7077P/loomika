@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useCallback, useRef, useEffect, useState } from "react";
+import React, { useCallback, useRef } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { motion, useInView, Variants } from "framer-motion";
+import { motion, useInView, HTMLMotionProps } from "framer-motion";
 
 const products = [
   {
@@ -39,140 +39,125 @@ const products = [
   },
 ];
 
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 60 },
-  visible: {
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
-  },
-};
-
-const sectionVariants: Variants = {
-  hidden: { opacity: 0, y: 80 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: "easeOut" },
-  },
+    transition: {
+      delay: i * 0.15,
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  }),
 };
 
 const OProducts = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "start",
+    slidesToScroll: 1,
     containScroll: "trimSnaps",
   });
 
-  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
-  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
 
-  const sectionRef = useRef(null);
-  const sectionInView = useInView(sectionRef, {
-    margin: "-40% 0px -30% 0px",
-    once: true,
-  });
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
 
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [cardInView, setCardInView] = useState<boolean[]>(
-    Array(products.length).fill(false)
-  );
-
-  useEffect(() => {
-    if (typeof IntersectionObserver === "undefined") return;
-
-    const observers: IntersectionObserver[] = [];
-
-    products.forEach((_, index) => {
-      const card = cardRefs.current[index];
-      if (!card) return;
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setCardInView((prev) => {
-              const updated = [...prev];
-              updated[index] = true;
-              return updated;
-            });
-            observer.unobserve(entry.target);
-          }
-        },
-        { rootMargin: "-30% 0px -30% 0px" }
-      );
-
-      observer.observe(card);
-      observers.push(observer);
-    });
-
-    return () => observers.forEach((obs) => obs.disconnect());
-  }, []);
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView = useInView(sectionRef, { margin: "-100px" });
 
   return (
     <motion.section
       ref={sectionRef}
-      className="py-20 container max-w-7xl mx-auto px-4 sm:px-6 md:px-8"
-      initial="hidden"
-      animate={sectionInView ? "visible" : "hidden"}
-      variants={sectionVariants}
+      initial={{ opacity: 0 }}
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="py-20 container max-w-7xl mx-auto px-2 sm:px-4 md:px-25"
+      id="our-products"
     >
       <motion.h2
+        initial={{ opacity: 0, y: 20 }}
+        animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
         className="text-3xl font-bold text-blue-900 mb-12 text-center"
-        initial="hidden"
-        animate={sectionInView ? "visible" : "hidden"}
-        variants={{
-          hidden: { opacity: 0, y: 80 },
-          visible: {
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.6, delay: 0.2 },
-          },
-        }}
       >
         Our Products
       </motion.h2>
 
       <div className="relative flex items-center justify-center group">
-        {/* Left Arrow */}
-        <motion.button
-          onClick={scrollPrev}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          className="hidden md:flex items-center justify-center absolute -left-12 z-10 w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300"
-          aria-label="Scroll Left"
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="absolute -left-12 z-10"
         >
-          <ChevronLeftIcon className="w-6 h-6" />
-        </motion.button>
+          <button
+            onClick={scrollPrev}
+            className="
+              hidden md:flex items-center justify-center
+              w-12 h-12
+              rounded-full
+              bg-blue-950/50 text-white backdrop-blur-md
+              transition duration-300 hover:scale-110 active:scale-95
+            "
+          >
+            <ChevronLeftIcon className="w-6 h-6" />
+          </button>
+        </motion.div>
 
-        {/* Carousel */}
         <div className="overflow-hidden mx-2 sm:mx-4 md:mx-6" ref={emblaRef}>
           <div className="flex">
             {products.map((product, index) => (
               <motion.div
                 key={index}
-                ref={(el) => {
-                  cardRefs.current[index] = el;
-                }}
+                custom={index}
                 variants={cardVariants}
                 initial="hidden"
-                animate={cardInView[index] ? "visible" : "hidden"}
-                className="group/card flex-shrink-0 w-64 sm:w-72 h-80 bg-blue-950 text-white rounded-xl mr-4 sm:mr-6 flex flex-col overflow-hidden relative border-2 border-blue-400"
+                animate={inView ? "visible" : "hidden"}
+                className="
+                  group/card
+                  flex-shrink-0
+                  w-64 sm:w-72
+                  h-80
+                  bg-blue-950 text-white rounded-xl
+                  mr-4 sm:mr-6
+                  flex flex-col overflow-hidden relative
+                  border-2 border-blue-400
+                "
               >
                 <div className="relative w-full h-full">
                   <Image
                     src={product.image}
                     alt={product.title}
                     fill
-                    className="object-cover transition-transform duration-500 group-hover/card:scale-110"
+                    className="
+                      object-cover
+                      transition-transform duration-500
+                      group-hover/card:scale-110
+                    "
                     sizes="(max-width: 640px) 100vw, 288px"
                     priority={index === 0}
                   />
                   <div className="absolute bottom-0 left-0 w-full h-30 bg-gradient-to-t from-black to-transparent" />
                 </div>
 
-                <div className="absolute bottom-0 left-0 w-full p-4 flex flex-col items-center transition-transform duration-500 group-hover/card:-translate-y-4">
+                <div className="
+                  absolute bottom-0 left-0 w-full p-4
+                  flex flex-col items-center
+                  transition-transform duration-500
+                  group-hover/card:-translate-y-4
+                ">
                   <h3 className="text-xl font-semibold">{product.title}</h3>
-                  <p className="text-sm text-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-500">
+                  <p className="
+                    text-sm text-center opacity-0
+                    group-hover/card:opacity-100
+                    transition-opacity duration-500
+                  ">
                     {product.description}
                   </p>
                 </div>
@@ -181,16 +166,25 @@ const OProducts = () => {
           </div>
         </div>
 
-        {/* Right Arrow */}
-        <motion.button
-          onClick={scrollNext}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          className="hidden md:flex items-center justify-center absolute -right-12 z-10 w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300"
-          aria-label="Scroll Right"
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="absolute -right-12 z-10"
         >
-          <ChevronRightIcon className="w-6 h-6" />
-        </motion.button>
+          <button
+            onClick={scrollNext}
+            className="
+              hidden md:flex items-center justify-center
+              w-12 h-12
+              rounded-full
+              bg-blue-950/50 text-white backdrop-blur-md
+              transition duration-300 hover:scale-110 active:scale-95
+            "
+          >
+            <ChevronRightIcon className="w-6 h-6" />
+          </button>
+        </motion.div>
       </div>
     </motion.section>
   );
