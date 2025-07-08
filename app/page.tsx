@@ -12,7 +12,7 @@ const HomePage = () => {
       <OProducts />
       <OFacility />
       <Certificates />
-      <Contactus/>
+      <Contactus />
     </>
   );
 };

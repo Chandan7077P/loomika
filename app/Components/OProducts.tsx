@@ -4,16 +4,17 @@ import React, { useCallback, useRef, useEffect } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { motion, useInView, Variants, useAnimation } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-// Define product type
+gsap.registerPlugin(ScrollTrigger);
+
 interface Product {
   title: string;
   description: string;
   image: string;
 }
 
-// Products data
 const products: Product[] = [
   {
     title: "Shrimps",
@@ -47,104 +48,74 @@ const products: Product[] = [
   },
 ];
 
-// Animation variants
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 80 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.15,
-      duration: 0.6,
-      ease: [0.16, 1, 0.3, 1],
-    },
-  }),
-};
-
-const arrowVariants: Variants = {
-  hidden: { opacity: 0, x: 20 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
-  },
-};
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      when: "beforeChildren",
-      staggerChildren: 0.1,
-    },
-  },
-};
-
 const OProducts = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, {
-    amount: 0.2,
-    margin: "0px 0px -100px 0px",
-  });
-  const controls = useAnimation();
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const navButtonsRef = useRef<HTMLDivElement>(null);
+
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "start",
     slidesToScroll: 1,
     containScroll: "trimSnaps",
   });
-  const resetTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Handle scroll events and reset to first card
-  const handleScroll = useCallback(() => {
-    if (!emblaApi) return;
-
-    if (resetTimeoutRef.current) {
-      clearTimeout(resetTimeoutRef.current);
-    }
-
-    resetTimeoutRef.current = setTimeout(() => {
-      emblaApi.scrollTo(0);
-    }, 1500);
-  }, [emblaApi]);
-
-  // Initialize Embla and set up event listeners
-  useEffect(() => {
-    if (!emblaApi) return;
-
-    emblaApi.on("scroll", handleScroll);
-    return () => {
-      emblaApi.off("scroll", handleScroll);
-      if (resetTimeoutRef.current) {
-        clearTimeout(resetTimeoutRef.current);
-      }
-    };
-  }, [emblaApi, handleScroll]);
-
-  // Animation control - triggers every time element comes into view
-  useEffect(() => {
-    if (isInView) {
-      controls.start("visible");
-      emblaApi?.scrollTo(0);
-    } else {
-      controls.start("hidden");
-    }
-  }, [isInView, controls, emblaApi]);
 
   const scrollPrev = useCallback(() => {
-    if (emblaApi) {
-      emblaApi.scrollPrev();
-      handleScroll();
-    }
-  }, [emblaApi, handleScroll]);
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
 
   const scrollNext = useCallback(() => {
-    if (emblaApi) {
-      emblaApi.scrollNext();
-      handleScroll();
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  useEffect(() => {
+    const elements = [titleRef.current, carouselRef.current];
+
+    elements.forEach((el, i) => {
+      if (!el) return;
+
+      gsap.fromTo(
+        el,
+        { opacity: 0, y: 80 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+          delay: i * 0.2,
+        }
+      );
+    });
+
+    if (navButtonsRef.current) {
+      gsap.fromTo(
+        navButtonsRef.current,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          delay: 0.6,
+          scrollTrigger: {
+            trigger: carouselRef.current,
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
     }
-  }, [emblaApi, handleScroll]);
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, []);
 
   return (
     <section
@@ -152,41 +123,21 @@ const OProducts = () => {
       className="py-20 container max-w-7xl mx-auto px-2 sm:px-4 md:px-25"
       id="our-products"
     >
-      <motion.h2
+      <h2
+        ref={titleRef}
         className="text-3xl font-bold text-blue-900 mb-12 text-center"
-        variants={cardVariants}
-        initial="hidden"
-        animate={controls}
-        custom={0}
       >
         Our Products
-      </motion.h2>
+      </h2>
 
-      <motion.div
-        className="relative flex items-center justify-center group"
-        variants={containerVariants}
-        initial="hidden"
-        animate={controls}
-      >
-        {/* Left Arrow */}
-        <motion.div className="absolute -left-12 z-10" variants={arrowVariants}>
-          <button
-            onClick={scrollPrev}
-            className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
-          >
-            <ChevronLeftIcon className="w-6 h-6" />
-          </button>
-        </motion.div>
-
+      <div ref={carouselRef} className="relative flex items-center justify-center group">
         {/* Carousel */}
         <div className="overflow-hidden mx-2 sm:mx-4 md:mx-6 w-full">
           <div className="embla__viewport" ref={emblaRef}>
-            <motion.div className="embla__container flex">
-              {products.map((product: Product, index: number) => (
-                <motion.div
+            <div className="embla__container flex">
+              {products.map((product, index) => (
+                <div
                   key={index}
-                  custom={index}
-                  variants={cardVariants}
                   className="group/card flex-shrink-0 w-64 sm:w-72 h-80 bg-blue-950 text-white rounded-xl mr-4 sm:mr-6 flex flex-col overflow-hidden relative border-2 border-blue-400"
                 >
                   <div className="relative w-full h-full">
@@ -207,25 +158,35 @@ const OProducts = () => {
                       {product.description}
                     </p>
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           </div>
         </div>
 
-        {/* Right Arrow */}
-        <motion.div
-          className="absolute -right-12 z-10"
-          variants={arrowVariants}
+        {/* Navigation Buttons */}
+        <div
+          ref={navButtonsRef}
+          className="absolute inset-y-0 left-0 right-0 flex justify-between items-center pointer-events-none z-10"
         >
-          <button
-            onClick={scrollNext}
-            className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
-          >
-            <ChevronRightIcon className="w-6 h-6" />
-          </button>
-        </motion.div>
-      </motion.div>
+          <div className="pointer-events-auto -ml-12">
+            <button
+              onClick={scrollPrev}
+              className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
+            >
+              <ChevronLeftIcon className="w-6 h-6" />
+            </button>
+          </div>
+          <div className="pointer-events-auto -mr-12">
+            <button
+              onClick={scrollNext}
+              className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
+            >
+              <ChevronRightIcon className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
   );
 };

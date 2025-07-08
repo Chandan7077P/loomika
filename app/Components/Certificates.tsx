@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
-import { motion, useInView, Variants } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface Certificate {
   id: number;
@@ -61,36 +64,66 @@ const certificates: Certificate[] = [
 
 const tickerCertificates = [...certificates, ...certificates, ...certificates];
 
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 80 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.15,
-      duration: 0.6,
-      ease: "easeOut",
-    },
-  }),
-};
-
 const Certificates: React.FC = () => {
-  const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { amount: 0.3 });
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const itemsRef = useRef<HTMLDivElement[]>([]);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    // Animate section fade-in
+    gsap.fromTo(
+      sectionRef.current,
+      { opacity: 0, y: 80 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
+
+    // Animate ticker items staggered
+    itemsRef.current.forEach((el, index) => {
+      gsap.fromTo(
+        el,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          delay: index * 0.05,
+          scrollTrigger: {
+            trigger: el,
+            start: "top 95%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, []);
 
   return (
-    <motion.section
+    <section
       ref={sectionRef}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      variants={{
-        hidden: { opacity: 0, y: 80 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
-      }}
       className="py-20 max-w-6xl mx-auto px-4"
       id="certificates"
     >
-      <h2 className="text-3xl font-bold text-blue-900 mb-12 text-center">
+      <h2
+        ref={titleRef}
+        className="text-3xl font-bold text-blue-900 mb-12 text-center"
+      >
         Our Certifications
       </h2>
 
@@ -101,12 +134,11 @@ const Certificates: React.FC = () => {
         <div className="ticker-container">
           <div className="ticker-content">
             {tickerCertificates.map((cert, idx) => (
-              <motion.div
+              <div
                 key={`${cert.id}-${idx}`}
-                custom={idx}
-                variants={cardVariants}
-                initial="hidden"
-                animate={isInView ? "visible" : "hidden"}
+                ref={(el) => {
+                  if (el) itemsRef.current[idx] = el;
+                }}
                 className="ticker-item bg-white rounded-xl p-6"
               >
                 <div className="w-40 h-40 flex items-center justify-center mb-4 bg-gray-50 rounded-lg">
@@ -121,7 +153,7 @@ const Certificates: React.FC = () => {
                 <p className="text-base text-blue-900 text-center font-semibold">
                   {cert.title}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -159,20 +191,6 @@ const Certificates: React.FC = () => {
           }
         }
 
-        .ticker-item:hover {
-          transform: translateY(-5px);
-        }
-
-        .ticker-container:hover .ticker-content {
-          animation-play-state: paused;
-        }
-
-        @media (max-width: 767px) {
-          .ticker-container:hover .ticker-content {
-            animation-play-state: running;
-          }
-        }
-
         @keyframes scroll {
           0% {
             transform: translateX(0);
@@ -182,7 +200,7 @@ const Certificates: React.FC = () => {
           }
         }
       `}</style>
-    </motion.section>
+    </section>
   );
 };
 
