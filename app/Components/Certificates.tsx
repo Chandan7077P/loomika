@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
-import { motion, useInView, useAnimation, Variants } from "framer-motion";
+import { motion, useInView, Variants } from "framer-motion";
 
 interface Certificate {
   id: number;
@@ -95,11 +95,9 @@ const Certificates: React.FC = () => {
       </h2>
 
       <div className="relative overflow-hidden">
-        {/* Gradient masks */}
         <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-white to-transparent z-10"></div>
         <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-white to-transparent z-10"></div>
 
-        {/* Ticker container */}
         <div className="ticker-container">
           <div className="ticker-content">
             {tickerCertificates.map((cert, idx) => (

@@ -10,32 +10,27 @@ const products = [
   {
     title: 'Shrimps',
     description: 'Fresh wild-caught shrimp.',
-    image:
-      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Vannamei%20HOSO%20Bl.jpg',
+    image: 'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Vannamei%20HOSO%20Bl.jpg',
   },
   {
     title: 'Vannamei',
     description: 'Premium vannamei shrimps.',
-    image:
-      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Vannamei%20Fresh.jpg',
+    image: 'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Vannamei%20Fresh.jpg',
   },
   {
     title: 'Fish',
     description: 'Premium quality fish.',
-    image:
-      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Seabass%20(Lates%20calcarifer).JPG',
+    image: 'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Seabass%20(Lates%20calcarifer).JPG',
   },
   {
     title: 'Squid',
     description: 'Tender calamari squid.',
-    image:
-      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Squid%20Whole%20(Loligo%20Sp).jpg',
+    image: 'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Squid%20Whole%20(Loligo%20Sp).jpg',
   },
   {
     title: 'Farmed BT',
     description: 'Delicious farmed shrimps.',
-    image:
-      'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Farmed%20BT%202.JPG',
+    image: 'https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/Farmed%20BT%202.JPG',
   },
 ];
 
@@ -78,7 +73,7 @@ const OProducts = () => {
   }, [emblaApi]);
 
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: false, amount: 0.2 });
+  const isInView = useInView(sectionRef, { amount: 0.2 }); // No 'once: true' — fade in/out works both directions
 
   return (
     <section
