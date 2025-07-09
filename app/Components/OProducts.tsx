@@ -4,8 +4,7 @@ import React, { useCallback } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { motion } from "framer-motion";
-import { easeOut } from "framer-motion";
+import { motion, easeOut } from "framer-motion";
 
 interface Product {
   title: string;
@@ -58,12 +57,11 @@ const fadeInVariant = {
   },
 };
 
-const OProducts = () => {
+const OProducts: React.FC = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    align: "start",
+    align: "center",
     slidesToScroll: 1,
-    containScroll: "trimSnaps",
   });
 
   const scrollPrev = useCallback(() => {
@@ -76,7 +74,7 @@ const OProducts = () => {
 
   return (
     <section
-      className="py-20 container max-w-7xl mx-auto px-2 sm:px-4 md:px-6"
+      className="py-20 max-w-7xl mx-auto px-6 sm:px-12"
       id="our-products"
     >
       <motion.h2
@@ -89,73 +87,66 @@ const OProducts = () => {
         Our Products
       </motion.h2>
 
+      {/* Carousel container with relative wrapper */}
       <motion.div
-        className="relative flex items-center justify-center"
+        className="relative"
         variants={fadeInVariant}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="overflow-hidden w-full">
-          <div className="embla__viewport" ref={emblaRef}>
-            <div className="embla__container flex">
-              {products.map((product, index) => (
-                <div
-                  key={index}
-                  className="group/card flex-shrink-0 w-64 sm:w-72 h-80 bg-blue-950 text-white rounded-xl mr-4 sm:mr-6 relative overflow-hidden border-2 border-blue-400"
-                >
-                  {/* 🛠️ This wrapper MUST be relative and have set height/width */}
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={product.image}
-                      alt={product.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover/card:scale-110"
-                      sizes="(max-width: 640px) 100vw, 288px"
-                      priority={index === 0}
-                    />
-                    {/* Gradient Overlay */}
-                    <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black/80 to-transparent" />
-                  </div>
-
-                  {/* Text overlay */}
-                  <div className="absolute bottom-0 left-0 w-full p-4 flex flex-col items-center transition-transform duration-500 group-hover/card:-translate-y-4 z-10">
-                    <h3 className="text-xl font-semibold">{product.title}</h3>
-                    <p className="text-sm text-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-500">
-                      {product.description}
-                    </p>
-                  </div>
+        {/* Carousel */}
+        <div className="overflow-hidden w-full" ref={emblaRef}>
+          <div className="embla__container flex">
+            {products.map((product, index) => (
+              <div
+                key={index}
+                className="group/card flex-[0_0_auto] w-64 sm:w-72 h-80 bg-blue-950 text-white rounded-xl relative overflow-hidden border-2 border-blue-400 mx-3"
+              >
+                <div className="relative w-full h-full">
+                  <Image
+                    src={product.image}
+                    alt={product.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover/card:scale-110"
+                    sizes="(min-width: 640px) 288px, 256px"
+                    priority={index === 0}
+                  />
+                  <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black/80 to-transparent" />
                 </div>
-              ))}
-            </div>
+
+                <div className="absolute bottom-0 left-0 w-full p-4 flex flex-col items-center transition-transform duration-500 group-hover/card:-translate-y-4 z-10">
+                  <h3 className="text-xl font-semibold">{product.title}</h3>
+                  <p className="text-sm text-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-500">
+                    {product.description}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Navigation Buttons */}
-        <motion.div
-          className="absolute inset-y-0 left-0 right-0 flex justify-between items-center pointer-events-none z-20"
-          variants={fadeInVariant}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          <div className="pointer-events-auto -ml-12">
+        {/* Navigation buttons positioned over the carousel */}
+        <div className="absolute inset-y-0 left-0 right-0 flex justify-between items-center pointer-events-none z-20">
+          <div className="pointer-events-auto -ml-8">
             <button
               onClick={scrollPrev}
-              className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
+              aria-label="Scroll to previous product"
+              className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/90 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
             >
               <ChevronLeftIcon className="w-6 h-6" />
             </button>
           </div>
-          <div className="pointer-events-auto -mr-12">
+          <div className="pointer-events-auto -mr-8">
             <button
               onClick={scrollNext}
-              className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
+              aria-label="Scroll to next product"
+              className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/90 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
             >
               <ChevronRightIcon className="w-6 h-6" />
             </button>
           </div>
-        </motion.div>
+        </div>
       </motion.div>
     </section>
   );
