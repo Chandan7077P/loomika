@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useCallback, useRef } from "react";
+import React, { useCallback } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { motion } from "framer-motion";
-import { easeOut } from "framer-motion"; // ✅ Add this at top
+import { easeOut } from "framer-motion";
 
 interface Product {
   title: string;
@@ -53,7 +53,7 @@ const fadeInVariant = {
     y: 0,
     transition: {
       duration: 0.6,
-      ease: easeOut, // ✅ Proper easing function
+      ease: easeOut,
     },
   },
 };
@@ -67,16 +67,16 @@ const OProducts = () => {
   });
 
   const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
+    emblaApi?.scrollPrev();
   }, [emblaApi]);
 
   const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
+    emblaApi?.scrollNext();
   }, [emblaApi]);
 
   return (
     <section
-      className="py-20 container max-w-7xl mx-auto px-2 sm:px-4 md:px-25"
+      className="py-20 container max-w-7xl mx-auto px-2 sm:px-4 md:px-6"
       id="our-products"
     >
       <motion.h2
@@ -90,21 +90,21 @@ const OProducts = () => {
       </motion.h2>
 
       <motion.div
-        className="relative flex items-center justify-center group"
+        className="relative flex items-center justify-center"
         variants={fadeInVariant}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        {/* Carousel */}
-        <div className="overflow-hidden mx-2 sm:mx-4 md:mx-6 w-full">
+        <div className="overflow-hidden w-full">
           <div className="embla__viewport" ref={emblaRef}>
             <div className="embla__container flex">
               {products.map((product, index) => (
                 <div
                   key={index}
-                  className="group/card flex-shrink-0 w-64 sm:w-72 h-80 bg-blue-950 text-white rounded-xl mr-4 sm:mr-6 flex flex-col overflow-hidden relative border-2 border-blue-400"
+                  className="group/card flex-shrink-0 w-64 sm:w-72 h-80 bg-blue-950 text-white rounded-xl mr-4 sm:mr-6 relative overflow-hidden border-2 border-blue-400"
                 >
+                  {/* 🛠️ This wrapper MUST be relative and have set height/width */}
                   <div className="relative w-full h-full">
                     <Image
                       src={product.image}
@@ -114,10 +114,12 @@ const OProducts = () => {
                       sizes="(max-width: 640px) 100vw, 288px"
                       priority={index === 0}
                     />
-                    <div className="absolute bottom-0 left-0 w-full h-30 bg-gradient-to-t from-black to-transparent" />
+                    {/* Gradient Overlay */}
+                    <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black/80 to-transparent" />
                   </div>
 
-                  <div className="absolute bottom-0 left-0 w-full p-4 flex flex-col items-center transition-transform duration-500 group-hover/card:-translate-y-4">
+                  {/* Text overlay */}
+                  <div className="absolute bottom-0 left-0 w-full p-4 flex flex-col items-center transition-transform duration-500 group-hover/card:-translate-y-4 z-10">
                     <h3 className="text-xl font-semibold">{product.title}</h3>
                     <p className="text-sm text-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-500">
                       {product.description}
@@ -131,7 +133,7 @@ const OProducts = () => {
 
         {/* Navigation Buttons */}
         <motion.div
-          className="absolute inset-y-0 left-0 right-0 flex justify-between items-center pointer-events-none z-10"
+          className="absolute inset-y-0 left-0 right-0 flex justify-between items-center pointer-events-none z-20"
           variants={fadeInVariant}
           initial="hidden"
           whileInView="visible"

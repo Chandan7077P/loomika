@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import Image from "next/image";
 import {
   motion,
   Variants,
@@ -26,14 +27,7 @@ const ContactDemo: React.FC = () => {
     offset: ["start start", "end start"],
   });
 
-  const parallaxY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    ["0%", "30%"],
-    {
-      ease: (t) => t,
-    }
-  );
+  const parallaxY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -43,10 +37,12 @@ const ContactDemo: React.FC = () => {
           className="absolute inset-0 w-full h-[120%] -top-[10%]"
           style={{ y: parallaxY }}
         >
-          <img
+          <Image
             src="https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/contact-us-banner.jpg"
             alt="contact-baby-marine-international-kochi-kerela-india"
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            priority
           />
         </motion.div>
       </div>
@@ -59,7 +55,7 @@ const ContactDemo: React.FC = () => {
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <h2 className="text-4xl font-bold text-blue-950">Let's Connect</h2>
+        <h2 className="text-4xl font-bold text-blue-950">Let&#39;s Connect</h2>
       </motion.div>
 
       {/* Contact Section */}
@@ -123,7 +119,7 @@ const ContactDemo: React.FC = () => {
             <form className="flex flex-col h-full justify-between space-y-6">
               <div className="space-y-6">
                 <p className="text-lg text-gray-700">
-                  We'd love to hear from you. Please fill out the form or use
+                  We&#39;d love to hear from you. Please fill out the form or use
                   the contact details below to reach us.
                 </p>
 
