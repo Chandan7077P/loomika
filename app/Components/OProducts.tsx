@@ -1,13 +1,11 @@
 "use client";
 
-import React, { useCallback, useRef, useEffect } from "react";
+import React, { useCallback, useRef } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { motion } from "framer-motion";
+import { easeOut } from "framer-motion"; // ✅ Add this at top
 
 interface Product {
   title: string;
@@ -48,12 +46,19 @@ const products: Product[] = [
   },
 ];
 
-const OProducts = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const navButtonsRef = useRef<HTMLDivElement>(null);
+const fadeInVariant = {
+  hidden: { opacity: 0, y: 80 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: easeOut, // ✅ Proper easing function
+    },
+  },
+};
 
+const OProducts = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "start",
@@ -69,68 +74,28 @@ const OProducts = () => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
-  useEffect(() => {
-    const elements = [titleRef.current, carouselRef.current];
-
-    elements.forEach((el, i) => {
-      if (!el) return;
-
-      gsap.fromTo(
-        el,
-        { opacity: 0, y: 80 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: el,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
-          delay: i * 0.2,
-        }
-      );
-    });
-
-    if (navButtonsRef.current) {
-      gsap.fromTo(
-        navButtonsRef.current,
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "power2.out",
-          delay: 0.6,
-          scrollTrigger: {
-            trigger: carouselRef.current,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-    }
-
-    return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-    };
-  }, []);
-
   return (
     <section
-      ref={sectionRef}
       className="py-20 container max-w-7xl mx-auto px-2 sm:px-4 md:px-25"
       id="our-products"
     >
-      <h2
-        ref={titleRef}
+      <motion.h2
         className="text-3xl font-bold text-blue-900 mb-12 text-center"
+        variants={fadeInVariant}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
       >
         Our Products
-      </h2>
+      </motion.h2>
 
-      <div ref={carouselRef} className="relative flex items-center justify-center group">
+      <motion.div
+        className="relative flex items-center justify-center group"
+        variants={fadeInVariant}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
         {/* Carousel */}
         <div className="overflow-hidden mx-2 sm:mx-4 md:mx-6 w-full">
           <div className="embla__viewport" ref={emblaRef}>
@@ -165,9 +130,12 @@ const OProducts = () => {
         </div>
 
         {/* Navigation Buttons */}
-        <div
-          ref={navButtonsRef}
+        <motion.div
           className="absolute inset-y-0 left-0 right-0 flex justify-between items-center pointer-events-none z-10"
+          variants={fadeInVariant}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
         >
           <div className="pointer-events-auto -ml-12">
             <button
@@ -185,8 +153,8 @@ const OProducts = () => {
               <ChevronRightIcon className="w-6 h-6" />
             </button>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 };

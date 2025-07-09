@@ -1,78 +1,67 @@
-'use client';
+"use client";
 
-import React, { useRef, useEffect } from 'react';
-import { MapPinIcon, PhoneIcon, EnvelopeIcon } from '@heroicons/react/24/solid';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React from "react";
+import { motion } from "framer-motion";
+import { easeOut } from "framer-motion";
 
-gsap.registerPlugin(ScrollTrigger);
+import {
+  MapPinIcon,
+  PhoneIcon,
+  EnvelopeIcon,
+} from "@heroicons/react/24/solid";
+
+const fadeInVariant = {
+  hidden: { opacity: 0, y: 80 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: easeOut,
+    },
+  },
+};
 
 const Contactus: React.FC = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subTitleRef = useRef<HTMLParagraphElement>(null);
-  const leftRef = useRef<HTMLDivElement>(null);
-  const rightRef = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    const elements = [
-      titleRef.current,
-      subTitleRef.current,
-      leftRef.current,
-      rightRef.current,
-    ];
-
-    elements.forEach((el, i) => {
-      if (!el) return;
-
-      gsap.fromTo(
-        el,
-        { opacity: 0, y: 80 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 80%',
-            toggleActions: 'play none none reverse',
-          },
-          delay: i * 0.15,
-        }
-      );
-    });
-
-    return () => ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-  }, []);
-
   return (
-    <section id="contact-us" className="py-2 px-4" ref={sectionRef}>
+    <section id="contact-us" className="py-2 px-4">
       <div className="max-w-6xl mx-auto">
-        <h2
-          ref={titleRef}
+        <motion.h2
+          variants={fadeInVariant}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }} // ✅ updated
           className="text-3xl font-bold text-blue-900 mb-8 text-center"
         >
           Contact Us
-        </h2>
+        </motion.h2>
 
-        <p
-          ref={subTitleRef}
+        <motion.p
+          variants={fadeInVariant}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }} // ✅ updated
+          transition={{ delay: 0.15 }}
           className="md:w-1/2 text-2xl text-blue-900 font-bold text-center md:text-left mb-6"
         >
           Get in Touch
-        </p>
+        </motion.p>
 
         <div className="flex flex-col md:flex-row gap-12">
           {/* Left: Contact Details */}
-          <div
-            ref={leftRef}
+          <motion.div
+            variants={fadeInVariant}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }} // ✅ updated
+            transition={{ delay: 0.3 }}
             className="md:w-1/2 space-y-6 text-left mt-6"
           >
             <div className="flex items-center space-x-3">
               <MapPinIcon className="w-6 h-6 text-blue-950" />
               <p className="text-lg font-medium text-blue-950">
-                <span className="font-bold">Address:</span> Thoppumpady, Kochi, Kerala, India - 682005
+                <span className="font-bold">Address:</span> Thoppumpady, Kochi,
+                Kerala, India - 682005
               </p>
             </div>
             <div className="flex items-center space-x-3">
@@ -84,18 +73,26 @@ const Contactus: React.FC = () => {
             <div className="flex items-center space-x-3">
               <EnvelopeIcon className="w-6 h-6 text-blue-950" />
               <p className="text-lg font-medium text-blue-950">
-                <span className="font-bold">Email:</span> seafood@babymarineintl.com
+                <span className="font-bold">Email:</span>{" "}
+                seafood@babymarineintl.com
               </p>
             </div>
-          </div>
+          </motion.div>
 
           {/* Right: Contact Form */}
-          <form
-            ref={rightRef}
+          <motion.form
+            variants={fadeInVariant}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }} // ✅ updated
+            transition={{ delay: 0.45 }}
             className="md:w-1/2 space-y-6"
           >
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 <span className="font-medium text-blue-950">Your Name</span>
               </label>
               <input
@@ -107,7 +104,10 @@ const Contactus: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 <span className="font-medium text-blue-950">Your Email</span>
               </label>
               <input
@@ -119,7 +119,10 @@ const Contactus: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="message"
+                className="block text-sm font-medium text-gray-700"
+              >
                 <span className="font-medium text-blue-950">Your Query</span>
               </label>
               <textarea
@@ -138,7 +141,7 @@ const Contactus: React.FC = () => {
                 Send Message
               </button>
             </div>
-          </form>
+          </motion.form>
         </div>
       </div>
     </section>

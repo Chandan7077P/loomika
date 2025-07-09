@@ -117,3 +117,7 @@ html {
 .animate-scroll-ribbon {
   animation: scroll-ribbon 30s linear infinite;
 }
+
+body {
+  overflow-x: hidden;
+}

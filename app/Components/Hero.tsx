@@ -1,41 +1,47 @@
 'use client';
 
 import Link from 'next/link';
-import React, { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform, Variants } from 'framer-motion';
+
+// Parent container animation
+const container: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.3,
+    },
+  },
+};
+
+// Individual item animation
+const fadeInUp: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: 'easeOut' },
+  },
+};
 
 const Hero = () => {
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const subtextRef = useRef<HTMLParagraphElement>(null);
-  const buttonsRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  });
 
-    tl.fromTo(
-      headingRef.current,
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 1 }
-    )
-      .fromTo(
-        subtextRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 1 },
-        '-=0.5'
-      )
-      .fromTo(
-        buttonsRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 1 },
-        '-=0.6'
-      );
-  }, []);
+  const parallaxY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
 
   return (
     <section>
-      <div className="relative w-full h-screen overflow-hidden">
-        {/* Background Video */}
-        <div className="absolute top-0 left-0 w-full h-full">
+      <div ref={sectionRef} className="relative w-full h-screen overflow-hidden">
+        {/* Parallax Background Video */}
+        <motion.div
+          className="absolute top-0 left-0 w-full h-full"
+          style={{ y: parallaxY }}
+        >
           <video
             className="absolute top-0 left-0 min-w-full min-h-full w-auto h-auto object-cover object-center"
             autoPlay
@@ -45,29 +51,35 @@ const Hero = () => {
             preload="auto"
             src="https://cdn.jsdelivr.net/gh/Chandan7077P/BMI-Assets/hl-shrimp-video.mp4"
           />
-        </div>
+        </motion.div>
 
         {/* Overlay Content */}
         <div className="relative z-10 flex items-center justify-center h-full bg-black/40 text-white text-center px-4">
-          <div className="flex flex-col items-center">
-            <h1
-              ref={headingRef}
+          <motion.div
+            className="flex flex-col items-center"
+            variants={container}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.h1
               className="text-4xl md:text-6xl font-bold mb-4"
+              variants={fadeInUp}
             >
               Explore the Catch
-            </h1>
+            </motion.h1>
 
-            <p
-              ref={subtextRef}
+            <motion.p
               className="text-lg md:text-xl mb-8"
+              variants={fadeInUp}
             >
               Experience the elegance of wild caught shrimps in motion from
               Kochi, Kerala.
-            </p>
+            </motion.p>
 
-            <div
-              ref={buttonsRef}
+            <motion.div
               className="flex flex-row gap-4 sm:gap-8 items-center justify-center"
+              variants={fadeInUp}
             >
               <Link
                 href="#our-products"
@@ -88,8 +100,8 @@ const Hero = () => {
                 </span>
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-900"></span>
               </Link>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </section>

@@ -1,11 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import Image from "next/image";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { motion, easeOut } from "framer-motion";
 
 interface Certificate {
   id: number;
@@ -64,82 +61,45 @@ const certificates: Certificate[] = [
 
 const tickerCertificates = [...certificates, ...certificates, ...certificates];
 
+const fadeInVariant = {
+  hidden: { opacity: 0, y: 80 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: easeOut,
+    },
+  },
+};
+
 const Certificates: React.FC = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const itemsRef = useRef<HTMLDivElement[]>([]);
-
-  useEffect(() => {
-    if (!sectionRef.current) return;
-
-    // Animate section fade-in
-    gsap.fromTo(
-      sectionRef.current,
-      { opacity: 0, y: 80 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        },
-      }
-    );
-
-    // Animate ticker items staggered
-    itemsRef.current.forEach((el, index) => {
-      gsap.fromTo(
-        el,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "power2.out",
-          delay: index * 0.05,
-          scrollTrigger: {
-            trigger: el,
-            start: "top 95%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-    };
-  }, []);
-
   return (
-    <section
-      ref={sectionRef}
-      className="py-20 max-w-6xl mx-auto px-4"
-      id="certificates"
-    >
-      <h2
-        ref={titleRef}
+    <section className="py-20 max-w-6xl mx-auto px-4" id="certificates">
+      <motion.h2
         className="text-3xl font-bold text-blue-900 mb-12 text-center"
+        variants={fadeInVariant}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
       >
         Our Certifications
-      </h2>
+      </motion.h2>
 
       <div className="relative overflow-hidden">
-        <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-white to-transparent z-10"></div>
-        <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-white to-transparent z-10"></div>
+        <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-white to-transparent z-10" />
+        <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-white to-transparent z-10" />
 
         <div className="ticker-container">
           <div className="ticker-content">
             {tickerCertificates.map((cert, idx) => (
-              <div
+              <motion.div
                 key={`${cert.id}-${idx}`}
-                ref={(el) => {
-                  if (el) itemsRef.current[idx] = el;
-                }}
                 className="ticker-item bg-white rounded-xl p-6"
+                variants={fadeInVariant}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
               >
                 <div className="w-40 h-40 flex items-center justify-center mb-4 bg-gray-50 rounded-lg">
                   <Image
@@ -153,7 +113,7 @@ const Certificates: React.FC = () => {
                 <p className="text-base text-blue-900 text-center font-semibold">
                   {cert.title}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
