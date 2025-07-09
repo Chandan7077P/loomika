@@ -1,18 +1,12 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { motion, easeOut } from "framer-motion";
+import { motion, useInView, Variants } from "framer-motion";
 
-interface Product {
-  title: string;
-  description: string;
-  image: string;
-}
-
-const products: Product[] = [
+const products = [
   {
     title: "Shrimps",
     description: "Fresh wild-caught shrimp.",
@@ -45,63 +39,83 @@ const products: Product[] = [
   },
 ];
 
-const fadeInVariant = {
+const cardVariants: Variants = {
   hidden: { opacity: 0, y: 80 },
-  visible: {
+  visible: (i = 0) => ({
     opacity: 1,
     y: 0,
     transition: {
+      delay: i * 0.15,
       duration: 0.6,
-      ease: easeOut,
+      ease: "easeOut",
     },
-  },
+  }),
 };
 
-const OProducts: React.FC = () => {
+const OProducts = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    align: "center",
+    align: "start",
     slidesToScroll: 1,
+    containScroll: "trimSnaps",
   });
 
   const scrollPrev = useCallback(() => {
-    emblaApi?.scrollPrev();
+    if (emblaApi) emblaApi.scrollPrev();
   }, [emblaApi]);
 
   const scrollNext = useCallback(() => {
-    emblaApi?.scrollNext();
+    if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
+  const sectionRef = useRef(null);
+const isInView = useInView(sectionRef, { margin: "-100px", once: true }); //Use Once True With All Working
+
   return (
-    <section
-      className="py-20 max-w-7xl mx-auto px-6 sm:px-12"
+    <motion.section
+      ref={sectionRef}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="py-20 container max-w-7xl mx-auto px-2 sm:px-4 md:px-25"
       id="our-products"
     >
       <motion.h2
+        initial={{ opacity: 0, y: 80 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
         className="text-3xl font-bold text-blue-900 mb-12 text-center"
-        variants={fadeInVariant}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
       >
         Our Products
       </motion.h2>
 
-      {/* Carousel container with relative wrapper */}
-      <motion.div
-        className="relative"
-        variants={fadeInVariant}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-      >
-        {/* Carousel */}
-        <div className="overflow-hidden w-full" ref={emblaRef}>
-          <div className="embla__container flex">
+      <div className="relative flex items-center justify-center group">
+        {/* Left arrow */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="absolute -left-12 z-10"
+        >
+          <button
+            onClick={scrollPrev}
+            className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
+          >
+            <ChevronLeftIcon className="w-6 h-6" />
+          </button>
+        </motion.div>
+
+        {/* Embla Carousel */}
+        <div className="overflow-hidden mx-2 sm:mx-4 md:mx-6" ref={emblaRef}>
+          <div className="flex">
             {products.map((product, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="group/card flex-[0_0_auto] w-64 sm:w-72 h-80 bg-blue-950 text-white rounded-xl relative overflow-hidden border-2 border-blue-400 mx-3"
+                custom={index}
+                variants={cardVariants}
+                initial="hidden"
+                animate={isInView ? "visible" : "hidden"}
+                className="group/card flex-shrink-0 w-64 sm:w-72 h-80 bg-blue-950 text-white rounded-xl mr-4 sm:mr-6 flex flex-col overflow-hidden relative border-2 border-blue-400"
               >
                 <div className="relative w-full h-full">
                   <Image
@@ -109,46 +123,39 @@ const OProducts: React.FC = () => {
                     alt={product.title}
                     fill
                     className="object-cover transition-transform duration-500 group-hover/card:scale-110"
-                    sizes="(min-width: 640px) 288px, 256px"
+                    sizes="(max-width: 640px) 100vw, 288px"
                     priority={index === 0}
                   />
-                  <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black/80 to-transparent" />
+                  <div className="absolute bottom-0 left-0 w-full h-30 bg-gradient-to-t from-black to-transparent" />
                 </div>
 
-                <div className="absolute bottom-0 left-0 w-full p-4 flex flex-col items-center transition-transform duration-500 group-hover/card:-translate-y-4 z-10">
+                <div className="absolute bottom-0 left-0 w-full p-4 flex flex-col items-center transition-transform duration-500 group-hover/card:-translate-y-4">
                   <h3 className="text-xl font-semibold">{product.title}</h3>
                   <p className="text-sm text-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-500">
                     {product.description}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
 
-        {/* Navigation buttons positioned over the carousel */}
-        <div className="absolute inset-y-0 left-0 right-0 flex justify-between items-center pointer-events-none z-20">
-          <div className="pointer-events-auto -ml-8">
-            <button
-              onClick={scrollPrev}
-              aria-label="Scroll to previous product"
-              className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/90 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
-            >
-              <ChevronLeftIcon className="w-6 h-6" />
-            </button>
-          </div>
-          <div className="pointer-events-auto -mr-8">
-            <button
-              onClick={scrollNext}
-              aria-label="Scroll to next product"
-              className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/90 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
-            >
-              <ChevronRightIcon className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-      </motion.div>
-    </section>
+        {/* Right arrow */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="absolute -right-12 z-10"
+        >
+          <button
+            onClick={scrollNext}
+            className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
+          >
+            <ChevronRightIcon className="w-6 h-6" />
+          </button>
+        </motion.div>
+      </div>
+    </motion.section>
   );
 };
 
