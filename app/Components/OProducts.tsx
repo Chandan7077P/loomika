@@ -69,7 +69,7 @@ const OProducts = () => {
   }, [emblaApi]);
 
   const sectionRef = useRef(null);
-const isInView = useInView(sectionRef, { margin: "-100px", once: true }); //Use Once True With All Working
+  const isInView = useInView(sectionRef, { margin: "-100px", once: true }); //Use Once True With All Working
 
   return (
     <motion.section
@@ -99,7 +99,7 @@ const isInView = useInView(sectionRef, { margin: "-100px", once: true }); //Use 
         >
           <button
             onClick={scrollPrev}
-            className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
+            className="hidden lg:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
           >
             <ChevronLeftIcon className="w-6 h-6" />
           </button>
@@ -149,7 +149,7 @@ const isInView = useInView(sectionRef, { margin: "-100px", once: true }); //Use 
         >
           <button
             onClick={scrollNext}
-            className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
+            className="hidden lg:flex items-center justify-center w-12 h-12 rounded-full bg-blue-950/50 text-white backdrop-blur-md transition duration-300 hover:scale-110 active:scale-95"
           >
             <ChevronRightIcon className="w-6 h-6" />
           </button>
