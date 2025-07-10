@@ -26,19 +26,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white
-         text-black`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral-100 text-black`}
       >
-        <Navbar />
-        <main className="min-h-screen">{children}</main>
-        <footer className="w-full bg-gray-800 text-white text-center py-2 text-sm">
-          <p>
-            BMI Website designed by{" "}
-            <span className="font-semibold">Chandan Padhan</span> – Digital
-            Marketing Intern at{" "}
-            <span className="font-semibold">Highland Group</span>
-          </p>
-        </footer>
+        {/* MOBILE-LIKE CONTAINER */}
+        <div className="mx-auto max-w-[480px] min-h-screen bg-white shadow-md relative overflow-hidden">
+          <Navbar />
+          <main className="pb-24">{children}</main> {/* Extra space for bottom nav if needed */}
+          <footer className="w-full bg-gray-800 text-white text-center py-2 text-sm">
+            <p>
+              BMI Website designed by{" "}
+              <span className="font-semibold">Chandan Padhan</span> – Digital
+              Marketing Intern at{" "}
+              <span className="font-semibold">Highland Group</span>
+            </p>
+          </footer>
+        </div>
       </body>
     </html>
   );
