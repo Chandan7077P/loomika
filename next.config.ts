@@ -2,7 +2,7 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['cdn.jsdelivr.net'],
+    domains: ['cdn.sanity.io', 'cdn.jsdelivr.net'], // ✅ both supported
   },
 }
 
