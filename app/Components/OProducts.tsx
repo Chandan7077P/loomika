@@ -1,3 +1,6 @@
+// app/Components/OProducts.tsx
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -18,14 +21,14 @@ export default function OProducts({ products }: { products: OProduct[] }) {
         </h2>
       </div>
 
-      <div className='grid grid-cols-2 gap-4'>
+      <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
         {products.map((product) => (
           <Link
             key={product._id}
             href={`/products/${product.slug}`}
             className='group block'
           >
-            <div className='relative aspect-[3/4.5] w-full overflow-hidden bg-gray-100 shadow-sm'>
+            <div className='relative aspect-[3/4.5] w-full overflow-hidden bg-gray-100 shadow-sm rounded-lg'>
               <Image
                 src={product.imageUrl}
                 alt={product.name}
