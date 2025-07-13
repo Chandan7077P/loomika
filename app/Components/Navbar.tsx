@@ -3,18 +3,17 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, Search, Boxes, ShoppingCart, User } from 'lucide-react'
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 const navItems = [
   { href: '/', icon: Home },
   { href: '/Search', icon: Search },
   { href: '/Products', icon: Boxes },
   { href: '/Cart', icon: ShoppingCart },
-  { href: '/Account', icon: User },
 ]
 
 const Navbar = () => {
   const pathname = usePathname()
-
   const isActive = (href: string) => pathname === href
 
   return (
@@ -35,6 +34,23 @@ const Navbar = () => {
               </Link>
             </li>
           ))}
+
+          {/* Account icon (Sign in or Avatar) */}
+          <li className='flex-1 text-center'>
+            <div className='flex flex-col items-center justify-center gap-0.5'>
+              <SignedOut>
+                <SignInButton mode='modal'>
+                  <button className='hover:text-black'>
+                    <User size={24} />
+                  </button>
+                </SignInButton>
+              </SignedOut>
+
+              <SignedIn>
+                <UserButton afterSignOutUrl='/' />
+              </SignedIn>
+            </div>
+          </li>
         </ul>
       </nav>
     </div>
