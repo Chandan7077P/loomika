@@ -1,48 +1,64 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { onAuthStateChanged, signOut, User } from 'firebase/auth'
+import { auth } from '@/firebase'
+import OtpLogin from '../Components/OtpLogin'
 
 const Account = () => {
-  const [mobile, setMobile] = useState('')
+  const router = useRouter()
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  const handleSendOtp = () => {
-    if (!mobile.trim()) return alert('Please enter your mobile number')
-    alert(`OTP sent to +91-${mobile}`) // Replace with actual logic later
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser)
+        setLoading(false)
+        router.push('/dashboard') // Redirect logged-in users immediately
+      } else {
+        setUser(null)
+        setLoading(false) // Show login UI when no user
+      }
+    })
+
+    return () => unsubscribe()
+  }, [router])
+
+  const handleSignOut = async () => {
+    await signOut(auth)
+    setUser(null)
+    router.push('/account') // Redirect back to login page
   }
 
-  return (
-    <section className='min-h-screen bg-white text-gray-800 flex items-center justify-center px-4 py-12'>
-      <div className='max-w-md w-full bg-white p-8 rounded-xl shadow-lg border border-gray-100'>
-        <h2 className='text-2xl font-semibold text-center mb-2'>
-          Welcome to Loomika
-        </h2>
-        <p className='text-center text-gray-500 mb-6'>
-          Login or Signup using your mobile number
-        </p>
-
-        <label
-          htmlFor='mobile'
-          className='block text-sm font-medium text-gray-700 mb-2'
-        >
-          Mobile Number
-        </label>
-        <input
-          id='mobile'
-          type='tel'
-          maxLength={10}
-          placeholder='Enter your 10-digit mobile number'
-          value={mobile}
-          onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))}
-          className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 mb-4'
-        />
-
-        <button
-          onClick={handleSendOtp}
-          className='w-full py-3 bg-blue-900 text-white rounded-lg font-semibold hover:bg-blue-800 transition'
-        >
-          Send OTP
-        </button>
+  if (loading) {
+    return (
+      <div className='h-screen flex justify-center items-center text-gray-600'>
+        Checking login status...
       </div>
+    )
+  }
+
+  // If user is logged in (before redirect to dashboard), you can also show sign out here if you want
+  if (user) {
+    return (
+      <section className='min-h-screen flex flex-col justify-center items-center gap-4'>
+        <h1 className='text-2xl font-semibold'>Welcome, {user.phoneNumber}</h1>
+        <button
+          onClick={handleSignOut}
+          className='px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700'
+        >
+          Sign Out
+        </button>
+      </section>
+    )
+  }
+
+  // No user, show login form
+  return (
+    <section className='min-h-screen bg-white flex justify-center items-center px-4 py-12'>
+      <OtpLogin />
     </section>
   )
 }
