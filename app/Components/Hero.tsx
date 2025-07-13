@@ -105,7 +105,7 @@ const Hero = () => {
           style={{ y: parallaxY }}
         >
           <Image
-            src='https://cdn.jsdelivr.net/gh/AiChandan007/loomika-Assets@main/Loomika%20Hero%201.jpg'
+            src='https://cdn.jsdelivr.net/gh/AiChandan007/loomika-Assets@main/Loomika%20Hero%202.jpg'
             alt='Loomika Hero'
             fill
             className='object-cover object-center'
