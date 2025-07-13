@@ -1,8 +1,5 @@
-import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import './globals.css'
-import Navbar from './Components/Navbar'
-import { ClerkProvider } from '@clerk/nextjs'
+
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -13,30 +10,15 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
-export const metadata: Metadata = {
-  title: 'Loomika | Online Sambalpuri Store',
-  description: 'Shop Online for Sambalpuri Dress, Kurtis, Sarees and Shirts',
-}
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ClerkProvider>
-      <html lang='en'>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral-100 text-black`}
-        >
-          {/* MOBILE-LIKE CONTAINER */}
-          <div className='mx-auto max-w-[480px] min-h-screen bg-white shadow-md relative overflow-hidden'>
-            <Navbar />
-            <main className='pb-24'>{children}</main>{' '}
-            {/* Extra space for bottom nav if needed */}
-          </div>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang='en'>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral-100 text-black`}
+      >
+        {children}
+      </body>
+    </html>
   )
 }
+export default RootLayout
