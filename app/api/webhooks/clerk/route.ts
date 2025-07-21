@@ -1,106 +1,106 @@
 // app/api/webhooks/clerk/route.ts
-// This file handles incoming Clerk webhook events.
+// This file handles incoming Clerk webhook events using Clerk's built-in verifyWebhook.
 
-import { NextResponse } from 'next/server'
-import { headers } from 'next/headers'
-import type { WebhookEvent } from '@clerk/nextjs/server' // Correct import for WebhookEvent
-import { Webhook } from 'svix'
+import { NextResponse, NextRequest } from 'next/server';
+import type { WebhookEvent } from '@clerk/nextjs/server';
+import { verifyWebhook } from '@clerk/nextjs/webhooks';
 
 // Import your createUser function
-import { createUser } from '@/lib/actions/user.actions' // Assuming this path
+import { createUser } from '@/lib/actions/user.actions'; // Assuming this path
 
-// You will fill this in with your actual Clerk Webhook Secret from the Clerk Dashboard.
-// It's highly recommended to store this in your environment variables (e.g., .env.local)
-// and access it via process.env.CLERK_WEBHOOK_SECRET
-const CLERK_WEBHOOK_SECRET =
-  process.env.CLERK_WEBHOOK_SECRET || 'whsec_ybIZCGQ7YKGm6CsVcnxWG/5yjLXecs3f'
+// Use a more specific name for the secret as per Clerk's documentation
+const CLERK_WEBHOOK_SIGNING_SECRET = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
 
-export async function POST(req: Request) {
-  console.log('Received webhook request')
+// It's crucial to throw an error if the secret is not set,
+// as the webhook verification will fail without it.
+if (!CLERK_WEBHOOK_SIGNING_SECRET) {
+  throw new Error('CLERK_WEBHOOK_SIGNING_SECRET is not set in environment variables!');
+}
 
-  // Get the headers. Await the headers() function as it returns a Promise.
-  const headerPayload = await headers() // FIX: Added await here
-  const svix_id = headerPayload.get('svix-id')
-  const svix_timestamp = headerPayload.get('svix-timestamp')
-  const svix_signature = headerPayload.get('svix-signature')
+export async function POST(req: NextRequest) {
+  console.log('Received webhook request.');
 
-  // If there are no Svix headers, error out
-  if (!svix_id || !svix_timestamp || !svix_signature) {
-    console.error('Missing Svix headers')
-    return new NextResponse('Error occured -- no svix headers', { status: 400 })
-  }
-
-  // Get the body
-  const payload = await req.json()
-  const body = JSON.stringify(payload)
-
-  // Create a new Svix instance with your secret
-  const wh = new Webhook(CLERK_WEBHOOK_SECRET)
-
-  let evt: WebhookEvent
-
-  // Verify the payload with the headers
+  let evt: WebhookEvent;
   try {
-    evt = wh.verify(body, {
-      'svix-id': svix_id,
-      'svix-timestamp': svix_timestamp,
-      'svix-signature': svix_signature,
-    }) as WebhookEvent
-    console.log('Webhook verified successfully')
+    // The verifyWebhook function now correctly expects 'signingSecret'
+    // within its options object for your Clerk SDK version.
+    evt = await verifyWebhook(req, {
+      signingSecret: CLERK_WEBHOOK_SIGNING_SECRET,
+    }) as WebhookEvent;
+    console.log('Webhook verified successfully');
   } catch (err) {
-    console.error('Error verifying webhook:', err)
-    return new NextResponse('Error occured', { status: 400 })
+    console.error('Error verifying webhook:', err);
+    // Use NextResponse.json for API responses
+    return NextResponse.json({ error: 'Error verifying webhook' }, { status: 400 });
   }
 
-  // Get the ID and type
-  const { id } = evt.data
-  const eventType = evt.type
+  // Get the ID and type from the verified event
+  const { id } = evt.data;
+  const eventType = evt.type;
 
-  console.log(`Processing event type: ${eventType} for user ID: ${id}`)
+  // Add a robust check for the user ID
+  if (!id || typeof id !== 'string') {
+    console.error('Webhook event missing valid user ID.');
+    return NextResponse.json(
+      { error: 'Webhook event missing user ID' },
+      { status: 400 }
+    );
+  }
 
-  // Handle the webhook event
+  console.log(`Processing event type: ${eventType} for user ID: ${id}`);
+  // Only log the full payload in non-production environments for security and verbosity
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('Webhook payload:', evt.data);
+  }
+
+  // Handle the webhook event based on its type
   if (eventType === 'user.created') {
-    const { id, email_addresses, image_url, username, first_name, last_name } =
-      evt.data
+    const { email_addresses, image_url, username, first_name, last_name } = evt.data;
 
-    // Ensure we have an email address
+    // Ensure we have an email address, which is crucial for user creation
     if (!email_addresses || email_addresses.length === 0) {
-      console.error('User created event missing email address:', id)
-      return new NextResponse('User created event missing email address', {
-        status: 400,
-      })
+      console.error('User created event missing email address for ID:', id);
+      return NextResponse.json(
+        { error: 'User created event missing email address' },
+        { status: 400 }
+      );
     }
 
-    const primaryEmail = email_addresses[0].email_address
+    const primaryEmail = email_addresses[0].email_address;
 
     try {
+      // Call your createUser function to save the user to your database
       const newUser = await createUser({
-        clerkId: id,
+        clerkId: id, // Now definitely type 'string' due to the check above
         email: primaryEmail,
-        username: username || primaryEmail.split('@')[0], // Use username if available, otherwise derive from email
+        username: username || primaryEmail.split('@')[0], // Fallback username
         photo: image_url,
-        // FIX: Coerce null to undefined for firstName and lastName to match CreateUserParams
-        // Alternatively, update CreateUserParams in user.actions.ts to allow `string | null | undefined`
+        // Coerce null to undefined to match CreateUserParams interface if it expects undefined
         firstName: first_name ?? undefined,
         lastName: last_name ?? undefined,
         // planId and creditBalance will use default values from schema if not provided
-      })
-      console.log('User created in DB:', newUser)
+      });
+      console.log('User created in DB:', newUser);
     } catch (dbError) {
-      console.error('Error saving new user to database:', dbError)
-      return new NextResponse('Error saving user to database', { status: 500 })
+      console.error('Error saving new user to database:', dbError);
+      // Return a 500 status for internal server errors during DB operation
+      return NextResponse.json(
+        { error: 'Error saving user to database' },
+        { status: 500 }
+      );
     }
   }
-
-  // You can add handlers for other event types if needed, e.g.:
+  // Add handlers for other event types as needed, e.g., 'user.updated', 'user.deleted'
   // if (eventType === 'user.updated') {
-  //   // Logic to update user in your database
-  //   console.log('User updated event:', evt.data);
-  // }
-  // if (eventType === 'user.deleted') {
-  //   // Logic to delete user from your database
-  //   console.log('User deleted event:', evt.data);
+  //   const { id, email_addresses, image_url, username, first_name, last_name } = evt.data;
+  //   console.log(`User ${id} updated.`);
+  //   // Implement logic to update the user in your database
+  // } else if (eventType === 'user.deleted') {
+  //   const { id } = evt.data;
+  //   console.log(`User ${id} deleted.`);
+  //   // Implement logic to delete or soft-delete the user in your database
   // }
 
-  return new NextResponse('Webhook received and processed', { status: 200 })
+  // Respond with a 200 OK status once the webhook has been successfully processed
+  return NextResponse.json({ status: 'Webhook received and processed' }, { status: 200 });
 }
