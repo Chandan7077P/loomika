@@ -19,13 +19,12 @@ export function CustomUserButton() {
     <UserButton afterSignOutUrl="/">
       <UserButton.MenuItems>
         {isAdmin && (
+          // This is the correct way to structure the component
           <UserButton.Action
-            className="flex items-center"
             onClick={navigateToStudio}
-          >
-            <ShieldCheck className="mr-2 h-4 w-4" />
-            Admin Panel
-          </UserButton.Action>
+            label="Admin Panel"
+            labelIcon={<ShieldCheck className="h-4 w-4" />}
+          />
         )}
       </UserButton.MenuItems>
     </UserButton>
