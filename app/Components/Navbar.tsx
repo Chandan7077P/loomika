@@ -1,9 +1,14 @@
+// app/Components/Navbar.tsx
+
 'use client'
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, Search, Boxes, ShoppingCart, User } from 'lucide-react'
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { SignInButton, SignedIn, SignedOut } from '@clerk/nextjs'
+
+// 1. Import your new custom component
+import { CustomUserButton } from './CustomUserButton'
 
 const navItems = [
   { href: '/', icon: Home },
@@ -47,7 +52,8 @@ const Navbar = () => {
               </SignedOut>
 
               <SignedIn>
-                <UserButton afterSignOutUrl='/' />
+                {/* 2. Replace UserButton with your new CustomUserButton */}
+                <CustomUserButton />
               </SignedIn>
             </div>
           </li>
