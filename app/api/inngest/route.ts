@@ -1,9 +1,6 @@
 // app/api/inngest/route.ts
 // This file handles the complete lifecycle of user synchronization from Clerk to your database.
 
-import { NextResponse, NextRequest } from 'next/server';
-import type { WebhookEvent } from '@clerk/nextjs/server';
-import { verifyWebhook } from '@clerk/nextjs/webhooks';
 import { serve } from 'inngest/next';
 
 // --- Import your Inngest client and all required server actions ---
