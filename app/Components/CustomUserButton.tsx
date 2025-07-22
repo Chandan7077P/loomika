@@ -9,7 +9,7 @@ import { ShieldCheck } from 'lucide-react'
 export function CustomUserButton() {
   const { user } = useUser()
   const router = useRouter()
-  const isAdmin = user?.publicMetadata?.role === 'admin'
+  const isStudio = user?.publicMetadata?.role === 'studio'
 
   const navigateToStudio = () => {
     router.push('/studio')
@@ -18,7 +18,7 @@ export function CustomUserButton() {
   return (
     <UserButton afterSignOutUrl='/'>
       <UserButton.MenuItems>
-        {isAdmin && (
+        {isStudio && (
           // This is the correct way to structure the component
           <UserButton.Action
             onClick={navigateToStudio}
