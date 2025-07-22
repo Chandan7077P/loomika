@@ -103,17 +103,13 @@ const handleUserDeleted = inngest.createFunction(
   { id: 'handle-user-deleted', name: 'Handle User Deleted' },
   { event: 'clerk/user.deleted' },
   async ({ event, step }) => {
-    // For deletions, the payload might be smaller. We only need the ID.
-    // The 'deleted' flag is a failsafe.
     const { id, deleted } = event.data;
 
     if (!id || !deleted) {
-      // If the event is malformed or not a deletion, skip.
       throw new Error('Invalid user.deleted event payload.');
     }
 
     const deletedUser = await step.run('delete-user-in-db', async () => {
-      // Call your deleteUser action
       return await deleteUser(id);
     });
 
@@ -128,10 +124,10 @@ const handleUserDeleted = inngest.createFunction(
 //                                                                                //
 //================================================================================//
 
-/**
- * The GET handler registers all your Inngest functions.
- */
-export const GET = serve({
+// *** THIS IS THE FIX ***
+// The `serve` function from "inngest/next" creates handlers for GET, POST, and PUT.
+// We need to export all of them to fully support Inngest's functionality.
+export const { GET, POST, PUT } = serve({
   client: inngest,
   functions: [
     handleUserCreated,
@@ -139,34 +135,5 @@ export const GET = serve({
     handleUserDeleted,
   ],
 });
-
-/**
- * The POST handler receives, verifies, and forwards webhooks to Inngest.
- */
-export async function POST(req: NextRequest) {
-  try {
-    const evt = await verifyWebhook(req, {
-      signingSecret: CLERK_WEBHOOK_SIGNING_SECRET,
-    }) as WebhookEvent;
-
-    // Send the verified event to Inngest for background processing
-    await inngest.send({
-      name: `clerk/${evt.type}`, // e.g., "clerk/user.created"
-      data: evt.data,
-      user: { clerkId: evt.data.id },
-    });
-
-    return NextResponse.json({ message: 'Webhook received' }, { status: 200 });
-
-  } catch (err: unknown) { // <-- FIX: Changed 'any' to 'unknown'
-    console.error('Error in webhook handler:', err);
-    
-    // FIX: Type-safe error message handling
-    let errorMessage = 'An unknown error occurred while verifying the webhook.';
-    if (err instanceof Error) {
-      errorMessage = err.message;
-    }
-    
-    return NextResponse.json({ error: errorMessage }, { status: 400 });
-  }
-}
+```
+After updating this file and redeploying, the `PUT` requests from Inngest will be handled correctly, and your functions will sync successful
