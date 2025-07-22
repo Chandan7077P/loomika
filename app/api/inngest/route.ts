@@ -158,8 +158,15 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: 'Webhook received' }, { status: 200 });
 
-  } catch (err: any) {
+  } catch (err: unknown) { // <-- FIX: Changed 'any' to 'unknown'
     console.error('Error in webhook handler:', err);
-    return NextResponse.json({ error: err.message }, { status: 400 });
+    
+    // FIX: Type-safe error message handling
+    let errorMessage = 'An unknown error occurred while verifying the webhook.';
+    if (err instanceof Error) {
+      errorMessage = err.message;
+    }
+    
+    return NextResponse.json({ error: errorMessage }, { status: 400 });
   }
 }
