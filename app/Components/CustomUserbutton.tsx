@@ -1,29 +1,34 @@
 // app/Components/CustomUserButton.tsx
 
-"use client"; // This is crucial for Next.js 15
+"use client";
 
 import { UserButton, useUser } from "@clerk/nextjs";
-import Link from "next/link";
-import { ShieldCheck } from "lucide-react"; // Optional: An icon for the admin link
+import { useRouter } from "next/navigation"; // Import the router hook
+import { ShieldCheck } from "lucide-react";
 
 export function CustomUserButton() {
   const { user } = useUser();
-
-  // This checks the user's public metadata for an "admin" role
+  const router = useRouter(); // Initialize the router
   const isAdmin = user?.publicMetadata?.role === "admin";
+
+  // This function will handle the click and navigate the user
+  const navigateToStudio = () => {
+    router.push("/studio");
+  };
 
   return (
     <UserButton afterSignOutUrl="/">
-      {/* This container adds items to the dropdown */}
       <UserButton.MenuItems>
-        {/* This link will only appear if the user is an admin */}
+        {/* Only show this action if the user is an admin */}
         {isAdmin && (
-          <Link href="/studio"> {/* Link to your Sanity Studio */}
-            <UserButton.MenuItem>
-              <ShieldCheck className="mr-2 h-4 w-4" />
-              Admin Panel
-            </UserButton.MenuItem>
-          </Link>
+          /* Use UserButton.Action for custom menu items */
+          <UserButton.Action
+            className="flex items-center" // Optional: for better alignment
+            onClick={navigateToStudio}
+          >
+            <ShieldCheck className="mr-2 h-4 w-4" />
+            Admin Panel
+          </UserButton.Action>
         )}
       </UserButton.MenuItems>
     </UserButton>
