@@ -124,7 +124,6 @@ const handleUserDeleted = inngest.createFunction(
 //                                                                                //
 //================================================================================//
 
-// *** THIS IS THE FIX ***
 // The `serve` function from "inngest/next" creates handlers for GET, POST, and PUT.
 // We need to export all of them to fully support Inngest's functionality.
 export const { GET, POST, PUT } = serve({
@@ -135,5 +134,3 @@ export const { GET, POST, PUT } = serve({
     handleUserDeleted,
   ],
 });
-```
-After updating this file and redeploying, the `PUT` requests from Inngest will be handled correctly, and your functions will sync successful
