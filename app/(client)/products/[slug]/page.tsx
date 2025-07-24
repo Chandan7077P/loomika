@@ -17,11 +17,11 @@ interface SanityProduct {
   };
 }
 
-// Defines the props for the page component
+// Updated interface to match Next.js 15 requirements
 interface ProductPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 // Fetches the data for a single product
@@ -41,7 +41,9 @@ async function getProduct(slug: string): Promise<SanityProduct> {
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const product = await getProduct(params.slug);
+  // Await the params since it's now a Promise
+  const { slug } = await params;
+  const product = await getProduct(slug);
 
   return (
     <div className='bg-white'>
