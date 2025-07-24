@@ -6,12 +6,26 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { PortableText } from '@portabletext/react'
 
+// Define a basic type for a Portable Text block
+interface PortableTextBlock {
+  _key: string;
+  _type: "block";
+  children: {
+    _key: string;
+    _type: "span";
+    marks: string[];
+    text: string;
+  }[];
+  markDefs: any[];
+  style: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
+}
+
 // Define the shape of the data we get from Sanity
 interface SanityProduct {
   _id: string;
   name: string;
   price: number;
-  description: any; // Portable Text is a complex type, 'any' is acceptable here
+  description: PortableTextBlock[]; // Use the new type here instead of 'any'
   image: {
     asset: {
       _ref: string;
@@ -38,7 +52,7 @@ async function getProduct(slug: string): Promise<SanityProduct> {
 
   const product = await client.fetch(query, { slug });
   if (!product) {
-    notFound(); // Use notFound directly if fetch returns null/undefined
+    notFound();
   }
   return product;
 }
