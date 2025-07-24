@@ -1,5 +1,7 @@
 // sanity/lib/queries.ts
-export const oproductsQuery = `*[_type == "oproduct"] {
+
+// This query remains for your homepage "Oproducts" section
+export const oproductsQuery = `*[_type == "oproduct" && isPopular == true] {
   _id,
   name,
   slug,
@@ -11,4 +13,13 @@ export const oproductsQuery = `*[_type == "oproduct"] {
       url
     }
   }
+}`
+
+// Add this new query for the "All Products" page
+export const allProductsQuery = `*[_type == "oproduct"] {
+  _id,
+  name,
+  price,
+  image,
+  "slug": slug.current
 }`
