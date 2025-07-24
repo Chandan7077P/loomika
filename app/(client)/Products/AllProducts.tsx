@@ -24,7 +24,7 @@ const AllProducts = ({ products }: { products: Product[] }) => {
       </div>
 
       {/* Product grid starts here */}
-      <div className='grid grid-cols-2'>
+      <div className='grid grid-cols-2 gap-2'>
         {products.map((product) => (
           <Link
             key={product._id}
@@ -58,4 +58,4 @@ const AllProducts = ({ products }: { products: Product[] }) => {
   )
 }
 
-export default AllProducts
+export default AllProducts 

@@ -23,7 +23,7 @@ const OProducts = ({ products }: { products: OProduct[] }) => {
       </div>
 
       {/* Product grid starts here */}
-      <div className='grid grid-cols-2'>
+      <div className='grid grid-cols-2 gap-2'>
         {products.map((product) => (
           <Link
             key={product._id}
