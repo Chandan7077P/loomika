@@ -11,26 +11,38 @@ type Product = {
   name: string;
   price: number;
   description: string;
-  imageUrl: string;
+  // This will be the raw image asset data, not just a URL string
+  image: {
+    asset: {
+      _ref: string;
+    };
+  };
+};
+
+// Define the shape of the component's props
+type Props = {
+  params: {
+    slug: string;
+  };
 };
 
 // This function fetches the data for a single product
 async function getProduct(slug: string): Promise<Product | null> {
+  // Update the query to fetch the full image object
   const query = `*[_type == "oproduct" && slug.current == $slug][0] {
     _id,
     name,
     price,
     description,
-    "imageUrl": image.asset->url
+    image
   }`
 
   const product = await client.fetch(query, { slug })
-
   return product
 }
 
-// This is the main page component
-export default async function ProductPage({ params }: { params: { slug: string } }) {
+// This is the main page component, now using the 'Props' type
+export default async function ProductPage({ params }: Props) {
   const product = await getProduct(params.slug)
 
   // If no product is found, show a 404 page
@@ -45,7 +57,8 @@ export default async function ProductPage({ params }: { params: { slug: string }
           {/* Image gallery */}
           <div className='relative w-full aspect-w-1 aspect-h-1'>
             <Image
-              src={urlFor(product.imageUrl).width(1200).url()}
+              // Correctly use the urlFor builder with the image object
+              src={urlFor(product.image).width(1200).url()}
               alt={product.name}
               fill
               priority
@@ -65,10 +78,13 @@ export default async function ProductPage({ params }: { params: { slug: string }
 
             <div className='mt-6'>
               <h3 className='sr-only'>Description</h3>
-              <div
-                className='text-base text-gray-700 space-y-6'
-                dangerouslySetInnerHTML={{ __html: product.description }}
-              />
+              {/* Add a check to ensure description exists before rendering */}
+              {product.description && (
+                <div
+                  className='text-base text-gray-700 space-y-6'
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                />
+              )}
             </div>
 
             <div className='mt-10 flex'>
