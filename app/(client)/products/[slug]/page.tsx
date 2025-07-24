@@ -4,28 +4,12 @@ import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { PortableText } from '@portabletext/react'
 
-// Define a basic type for a Portable Text block
-interface PortableTextBlock {
-  _key: string;
-  _type: "block";
-  children: {
-    _key: string;
-    _type: "span";
-    marks: string[];
-    text: string;
-  }[];
-  markDefs: any[];
-  style: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
-}
-
-// Define the shape of the data we get from Sanity
+// Define the shape of the data, now without the description
 interface SanityProduct {
   _id: string;
   name: string;
   price: number;
-  description: PortableTextBlock[]; // Use the new type here instead of 'any'
   image: {
     asset: {
       _ref: string;
@@ -40,13 +24,12 @@ interface ProductPageProps {
   };
 }
 
-// This function fetches and returns the product data
+// Fetch the product data, removing 'description' from the query
 async function getProduct(slug: string): Promise<SanityProduct> {
   const query = `*[_type == "oproduct" && slug.current == $slug][0] {
     _id,
     name,
     price,
-    description,
     image
   }`
 
@@ -86,12 +69,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <p className='text-3xl text-gray-900'>₹{product.price}</p>
             </div>
 
-            {/* Safely render description if it exists */}
-            {product.description && (
-              <div className='mt-6 prose text-base text-gray-700'>
-                <PortableText value={product.description} />
-              </div>
-            )}
+            {/* The description section has been completely removed */}
 
             <div className='mt-10 flex'>
               <button
