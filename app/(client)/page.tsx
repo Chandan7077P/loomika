@@ -15,9 +15,7 @@ type SanityProduct = {
       _ref: string
     }
   }
-  slug: {
-    current: string
-  }
+  slug: string // The query returns slug as a string
 }
 
 type OProduct = {
@@ -43,7 +41,7 @@ export default async function HomePage() {
     _id: product._id,
     name: product.name,
     price: product.price,
-    slug: product.slug.current,
+    slug: product.slug, // <-- THE FIX IS HERE: Changed from product.slug.current
     imageUrl: urlFor(product.image).width(600).url(),
   }))
 

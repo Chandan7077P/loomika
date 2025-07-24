@@ -1,11 +1,11 @@
 // app/(client)/products/[slug]/page.tsx
 
 import { client } from '@/sanity/lib/client'
+import { notFound } from 'next/navigation'
 import { urlFor } from '@/sanity/lib/image'
 import Image from 'next/image'
-import { notFound } from 'next/navigation'
 
-// Define the shape of the data, now without the description
+// Defines the shape of the product data from Sanity
 interface SanityProduct {
   _id: string;
   name: string;
@@ -17,20 +17,20 @@ interface SanityProduct {
   };
 }
 
-// Define the props for our page component - FIXED for Next.js 15
+// Defines the props for the page component
 interface ProductPageProps {
-  params: Promise<{
+  params: {
     slug: string;
-  }>;
+  };
 }
 
-// Fetch the product data, removing 'description' from the query
+// Fetches the data for a single product
 async function getProduct(slug: string): Promise<SanityProduct> {
   const query = `*[_type == "oproduct" && slug.current == $slug][0] {
     _id,
     name,
     price,
-    image
+    image // Fetches the single image field
   }`
 
   const product = await client.fetch(query, { slug });
@@ -40,23 +40,21 @@ async function getProduct(slug: string): Promise<SanityProduct> {
   return product;
 }
 
-// This is the main page component - FIXED for Next.js 15
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { slug } = await params; // ADDED: await the params Promise
-  const product = await getProduct(slug);
+  const product = await getProduct(params.slug);
 
   return (
     <div className='bg-white'>
       <div className='mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8'>
         <div className='lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start'>
-          {/* Image gallery */}
-          <div className='relative w-full aspect-w-1 aspect-h-1'>
+          {/* ## This is the section that creates the 1:1 image layout ## */}
+          <div className='relative aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg'>
             <Image
               src={urlFor(product.image).width(1200).url()}
               alt={product.name}
               fill
               priority
-              className='object-center object-cover rounded-lg'
+              className='object-cover object-center'
             />
           </div>
 
@@ -65,17 +63,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <h1 className='text-3xl font-extrabold tracking-tight text-gray-900'>
               {product.name}
             </h1>
-
             <div className='mt-3'>
               <p className='text-3xl text-gray-900'>₹{product.price}</p>
             </div>
-
-            {/* The description section has been completely removed */}
-
             <div className='mt-10 flex'>
               <button
                 type='submit'
-                className='max-w-xs flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full'
+                className='w-full max-w-xs flex-1 rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50'
               >
                 Add to cart
               </button>
@@ -86,5 +80,3 @@ export default async function ProductPage({ params }: ProductPageProps) {
     </div>
   );
 }
-
-//100th Comit
