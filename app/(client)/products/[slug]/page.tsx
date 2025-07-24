@@ -17,11 +17,11 @@ interface SanityProduct {
   };
 }
 
-// Define the props for our page component
+// Define the props for our page component - FIXED for Next.js 15
 interface ProductPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 // Fetch the product data, removing 'description' from the query
@@ -40,9 +40,10 @@ async function getProduct(slug: string): Promise<SanityProduct> {
   return product;
 }
 
-// This is the main page component
+// This is the main page component - FIXED for Next.js 15
 export default async function ProductPage({ params }: ProductPageProps) {
-  const product = await getProduct(params.slug);
+  const { slug } = await params; // ADDED: await the params Promise
+  const product = await getProduct(slug);
 
   return (
     <div className='bg-white'>
