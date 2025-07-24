@@ -1,9 +1,13 @@
+// sanity/schemaTypes/index.ts
 import { type SchemaTypeDefinition } from 'sanity'
 
-// 👇 Import your schemas here
+// Import all your schemas
 import oproduct from './oproducts'
+// import category from './category' // <-- Example: Add other schemas like this
+// import author from './author'   // <-- Example: And this one
 
-// 👇 Export the full schema object
-export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [oproduct],
-}
+export const schemaTypes: SchemaTypeDefinition[] = [
+  oproduct,
+  // category, // <-- Then add them to the array
+  // author,
+]
