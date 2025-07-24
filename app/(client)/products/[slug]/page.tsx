@@ -6,29 +6,28 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { PortableText } from '@portabletext/react'
 
-// Define the shape of the product data we expect
-type Product = {
+// Define the shape of the data we get from Sanity
+interface SanityProduct {
   _id: string;
   name: string;
   price: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  description: any; // Disable the ESLint rule for this line only
+  description: any; // Portable Text is a complex type, 'any' is acceptable here
   image: {
     asset: {
       _ref: string;
     };
   };
-};
+}
 
-// Define the shape of the component's props robustly
-interface Props {
+// Define the props for our page component
+interface ProductPageProps {
   params: {
     slug: string;
   };
 }
 
-// This function fetches the data for a single product
-async function getProduct(slug: string): Promise<Product | null> {
+// This function fetches and returns the product data
+async function getProduct(slug: string): Promise<SanityProduct> {
   const query = `*[_type == "oproduct" && slug.current == $slug][0] {
     _id,
     name,
@@ -37,17 +36,16 @@ async function getProduct(slug: string): Promise<Product | null> {
     image
   }`
 
-  const product = await client.fetch(query, { slug })
-  return product
+  const product = await client.fetch(query, { slug });
+  if (!product) {
+    notFound(); // Use notFound directly if fetch returns null/undefined
+  }
+  return product;
 }
 
 // This is the main page component
-export default async function ProductPage({ params }: Props) {
-  const product = await getProduct(params.slug)
-
-  if (!product) {
-    notFound()
-  }
+export default async function ProductPage({ params }: ProductPageProps) {
+  const product = await getProduct(params.slug);
 
   return (
     <div className='bg-white'>
@@ -74,9 +72,12 @@ export default async function ProductPage({ params }: Props) {
               <p className='text-3xl text-gray-900'>₹{product.price}</p>
             </div>
 
-            <div className='mt-6 prose text-base text-gray-700 space-y-6'>
-              <PortableText value={product.description} />
-            </div>
+            {/* Safely render description if it exists */}
+            {product.description && (
+              <div className='mt-6 prose text-base text-gray-700'>
+                <PortableText value={product.description} />
+              </div>
+            )}
 
             <div className='mt-10 flex'>
               <button
@@ -90,5 +91,5 @@ export default async function ProductPage({ params }: Props) {
         </div>
       </div>
     </div>
-  )
+  );
 }
