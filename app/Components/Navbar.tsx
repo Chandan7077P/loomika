@@ -13,7 +13,7 @@ import { CustomUserButton } from './CustomUserButton'
 const navItems = [
   { href: '/', icon: Home },
   { href: '/Search', icon: Search },
-  { href: '/Products', icon: Boxes },
+  { href: '/AllProducts', icon: Boxes },
   { href: '/Cart', icon: ShoppingCart },
 ]
 
