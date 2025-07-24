@@ -4,14 +4,14 @@ import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import { PortableText } from '@portabletext/react' // Import the new component
 
-// Define the shape of the product data we expect from Sanity
+// Define the shape of the product data we expect
 type Product = {
   _id: string;
   name: string;
   price: number;
-  description: string;
-  // This will be the raw image asset data, not just a URL string
+  description: any; // Use 'any' for Portable Text content
   image: {
     asset: {
       _ref: string;
@@ -19,16 +19,16 @@ type Product = {
   };
 };
 
-// Define the shape of the component's props
-type Props = {
+// Define the shape of the component's props robustly
+interface Props {
   params: {
     slug: string;
   };
-};
+}
 
 // This function fetches the data for a single product
 async function getProduct(slug: string): Promise<Product | null> {
-  // Update the query to fetch the full image object
+  // Update the query to fetch the full image object and description
   const query = `*[_type == "oproduct" && slug.current == $slug][0] {
     _id,
     name,
@@ -41,7 +41,7 @@ async function getProduct(slug: string): Promise<Product | null> {
   return product
 }
 
-// This is the main page component, now using the 'Props' type
+// This is the main page component, now using the 'Props' interface
 export default async function ProductPage({ params }: Props) {
   const product = await getProduct(params.slug)
 
@@ -57,7 +57,6 @@ export default async function ProductPage({ params }: Props) {
           {/* Image gallery */}
           <div className='relative w-full aspect-w-1 aspect-h-1'>
             <Image
-              // Correctly use the urlFor builder with the image object
               src={urlFor(product.image).width(1200).url()}
               alt={product.name}
               fill
@@ -76,15 +75,9 @@ export default async function ProductPage({ params }: Props) {
               <p className='text-3xl text-gray-900'>₹{product.price}</p>
             </div>
 
-            <div className='mt-6'>
-              <h3 className='sr-only'>Description</h3>
-              {/* Add a check to ensure description exists before rendering */}
-              {product.description && (
-                <div
-                  className='text-base text-gray-700 space-y-6'
-                  dangerouslySetInnerHTML={{ __html: product.description }}
-                />
-              )}
+            <div className='mt-6 prose text-base text-gray-700 space-y-6'>
+              {/* Safely render the description using PortableText */}
+              <PortableText value={product.description} />
             </div>
 
             <div className='mt-10 flex'>
