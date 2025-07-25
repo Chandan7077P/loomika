@@ -4,28 +4,17 @@ import { client } from '@/sanity/lib/client'
 import { notFound } from 'next/navigation'
 import { urlFor } from '@/sanity/lib/image'
 import Image from 'next/image'
+import { SanityOproduct } from '@/sanity.types' // 1. Import the auto-generated type
 
-// Defines the shape of the product data from Sanity
-interface SanityProduct {
-  _id: string;
-  name: string;
-  price: number;
-  image: {
-    asset: {
-      _ref: string;
-    };
+// Defines the props for this page component
+interface ProductPageProps {
+  params: {
+    slug: string;
   };
 }
 
-// Updated interface to match Next.js 15 requirements
-interface ProductPageProps {
-  params: Promise<{
-    slug: string;
-  }>;
-}
-
-// Fetches the data for a single product
-async function getProduct(slug: string): Promise<SanityProduct> {
+// Fetches the data for a single product using its slug
+async function getProduct(slug: string): Promise<SanityOproduct> {
   const query = `*[_type == "oproduct" && slug.current == $slug][0] {
     _id,
     name,
@@ -33,7 +22,9 @@ async function getProduct(slug: string): Promise<SanityProduct> {
     image // Fetches the single image field
   }`
 
-  const product = await client.fetch(query, { slug });
+  // 2. The return type is now the reliable, auto-generated SanityOproduct
+  const product: SanityOproduct = await client.fetch(query, { slug });
+  
   if (!product) {
     notFound();
   }
@@ -41,15 +32,14 @@ async function getProduct(slug: string): Promise<SanityProduct> {
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  // Await the params since it's now a Promise
-  const { slug } = await params;
+  const { slug } = params;
   const product = await getProduct(slug);
 
   return (
     <div className='bg-white'>
       <div className='mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8'>
         <div className='lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start'>
-          {/* ## This is the section that creates the 1:1 image layout ## */}
+          {/* Image section */}
           <div className='relative aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg'>
             <Image
               src={urlFor(product.image).width(1200).url()}

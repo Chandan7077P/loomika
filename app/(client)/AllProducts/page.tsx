@@ -1,23 +1,11 @@
-// app/(client)/Products/page.tsx
+// app/(client)/AllProducts/page.tsx
 
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
-import AllProducts from './AllProducts' // The new client component
+import AllProducts from './AllProducts' // The client component
+import { SanityOproduct } from '@/sanity.types' // 1. Import the auto-generated type
 
-// Define the shape of the data coming from Sanity
-type SanityProduct = {
-  _id: string
-  name: string
-  price: number
-  image: {
-    asset: {
-      _ref: string
-    }
-  }
-  slug: string // Slug is already a string here from the query
-}
-
-// Define the shape of the data we'll pass to the component
+// Define the shape of the data we'll pass to the client component
 type Product = {
   _id: string
   name: string
@@ -27,8 +15,8 @@ type Product = {
 }
 
 export default async function ProductsPage() {
-  // Fetch all products using the new query
-  const rawProducts: SanityProduct[] = await client.fetch(
+  // 2. Fetch all products and type the result with our reliable, auto-generated type
+  const rawProducts: SanityOproduct[] = await client.fetch(
     `*[_type == "oproduct"]{
       _id,
       name,
@@ -38,7 +26,7 @@ export default async function ProductsPage() {
     }`
   )
 
-  // Process the data to create image URLs
+  // 3. Process the raw data to create image URLs, just like before
   const products: Product[] = rawProducts.map((product) => ({
     _id: product._id,
     name: product.name,
@@ -47,6 +35,6 @@ export default async function ProductsPage() {
     imageUrl: urlFor(product.image).width(600).url(),
   }))
 
-  // Render the client component with the fetched products
+  // 4. Render the client component with the processed products
   return <AllProducts products={products} />
 }
